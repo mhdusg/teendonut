@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f0a00">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Teen Donut — انبار</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0f0a00;--bg2:#1a1200;--bg3:#221800;--card:#1e1500;
+  --border:#2d2000;--gold:#e8a020;
+  --text:#f5ede0;--text2:#a08060;--text3:#604030;
+  --green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6
+}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto}
+/* AUTH */
+#authScreen{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
+.auth-logo{font-size:52px;margin-bottom:8px}
+.auth-brand{font-size:10px;color:var(--gold);letter-spacing:4px;text-transform:uppercase;margin-bottom:4px;text-align:center}
+.auth-subtitle{font-size:13px;color:var(--text2);margin-bottom:36px;text-align:center}
+.auth-tabs{display:flex;margin-bottom:24px;background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;width:100%}
+.auth-tab{flex:1;padding:10px;border:none;background:transparent;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.auth-tab.active{background:var(--bg3);color:var(--gold)}
+.auth-form{width:100%;display:flex;flex-direction:column;gap:14px}
+.auth-field-label{font-size:12px;color:var(--text2);margin-bottom:5px}
+.auth-input{width:100%;padding:13px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;font-family:inherit;outline:none;box-sizing:border-box}
+.auth-input:focus{border-color:var(--gold)}
+.auth-btn{width:100%;padding:14px;border-radius:14px;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--gold);color:#0f0a00;margin-top:4px}
+.auth-msg{text-align:center;font-size:13px;padding:10px;border-radius:10px;min-height:18px}
+.auth-msg.error{background:#2d0a0a;color:#fca5a5}
+.auth-msg.pending{background:#1a1200;color:#f59e0b;border:1px solid #f59e0b44}
+.auth-msg.success{background:#052e16;color:#86efac}
+/* APP */
+#appScreen{display:none}
+.header{background:linear-gradient(160deg,#1a0f00,#2a1800);padding:18px 18px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+.header-top{display:flex;align-items:center;justify-content:space-between}
+.header-brand{font-size:10px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:2px}
+.header-title{font-size:20px;font-weight:800}
+.alert-bar{margin-top:10px;background:#2d1500;border:1px solid #f59e0b44;border-radius:10px;padding:8px 12px;font-size:12px;color:#fbbf24;display:flex;align-items:center;gap:6px;cursor:pointer}
+.content{padding:16px 16px 90px}
+.page-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+.page-tabs::-webkit-scrollbar{display:none}
+.ptab{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.ptab.active{border-color:var(--gold);background:var(--bg3);color:var(--gold)}
+.filter-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
+.filter-scroll::-webkit-scrollbar{display:none}
+.filter-btn{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.filter-btn.active{border-color:var(--gold);background:var(--bg3);color:var(--gold)}
+.items-list{display:flex;flex-direction:column;gap:10px}
+.item-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;position:relative;overflow:hidden}
+.item-card.low{border-color:#f59e0b66}
+.item-card.empty{border-color:#ef444466}
+.item-accent{position:absolute;right:0;top:0;bottom:0;width:3px}
+.item-row{display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer}
+.item-name{font-weight:700;font-size:15px;margin-bottom:3px}
+.item-cat{font-size:11px;color:var(--text2)}
+.item-qty{font-size:26px;font-weight:800;line-height:1}
+.item-unit{font-size:11px;color:var(--text2);margin-top:2px}
+.item-actions{display:flex;gap:6px;margin-top:10px}
+.item-action-btn{flex:1;padding:7px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit}
+.item-action-btn.tx{border-color:#e8a02044;color:var(--gold)}
+.item-action-btn.edit{border-color:#3b82f644;color:#3b82f6}
+.item-action-btn.del{border-color:#ef444433;color:#ef4444}
+.progress-wrap{margin-top:10px;height:3px;background:var(--border);border-radius:4px}
+.progress-bar{height:100%;border-radius:4px}
+.item-min{font-size:10px;color:var(--text3);margin-top:4px}
+.back-btn{background:none;border:none;color:var(--gold);font-size:14px;cursor:pointer;margin-bottom:20px;padding:0;font-family:inherit;display:block}
+.tx-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px;text-align:center}
+.tx-item-name{font-size:13px;color:var(--text2);margin-bottom:4px}
+.tx-qty{font-size:44px;font-weight:800;line-height:1}
+.tx-unit{color:var(--text2);font-size:13px;margin-top:4px}
+.type-toggle{display:flex;gap:8px;margin-bottom:20px}
+.type-btn{flex:1;padding:12px;border-radius:12px;border:2px solid var(--border);background:transparent;color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.type-btn.in.active{border-color:var(--green);background:#052e16;color:var(--green)}
+.type-btn.out.active{border-color:var(--red);background:#2d0a0a;color:var(--red)}
+.field-label{font-size:12px;color:var(--text2);margin-bottom:6px}
+.field-wrap{margin-bottom:14px}
+.field-input{width:100%;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:16px;font-family:inherit;text-align:center;outline:none;box-sizing:border-box}
+.field-input:focus{border-color:var(--gold)}
+.field-input.small{font-size:14px;text-align:right}
+.submit-btn{width:100%;padding:14px;border-radius:14px;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+.submit-btn.green{background:#16a34a;color:white}
+.submit-btn.red{background:#dc2626;color:white}
+.submit-btn.gold{background:var(--gold);color:#0f0a00}
+.submit-btn.blue{background:#2563eb;color:white}
+.section-title{font-size:18px;font-weight:800;margin-bottom:20px}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.cat-btn{padding:10px 6px;border-radius:10px;border:2px solid var(--border);background:transparent;color:var(--text2);font-size:11px;cursor:pointer;font-family:inherit;text-align:center;line-height:1.6}
+/* CHECKLIST */
+.add-check-row{display:flex;gap:8px;margin-bottom:16px}
+.add-check-input{flex:1;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:inherit;outline:none}
+.add-check-input:focus{border-color:var(--gold)}
+.add-check-btn{padding:10px 16px;background:var(--gold);border:none;border-radius:12px;color:#0f0a00;font-size:18px;font-weight:700;cursor:pointer}
+.check-item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+.check-item.done{opacity:.5}
+.check-circle{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px}
+.check-circle.done{background:var(--green);border-color:var(--green);color:white}
+.check-text{flex:1;font-size:14px}
+.check-text.done{text-decoration:line-through;color:var(--text2)}
+.check-del{font-size:16px;color:var(--text3);padding:4px;background:none;border:none;cursor:pointer}
+.checklist-progress{margin-bottom:16px}
+.checklist-progress-text{font-size:12px;color:var(--text2);margin-bottom:6px;display:flex;justify-content:space-between}
+.checklist-bar-wrap{height:4px;background:var(--border);border-radius:4px}
+.checklist-bar{height:100%;background:var(--green);border-radius:4px}
+.clear-done-btn{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:inherit;margin-top:12px}
+/* SMART CHECKLIST */
+.smart-list-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.smart-list-header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer}
+.smart-list-title{font-weight:700;font-size:14px}
+.smart-list-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.smart-list-actions{display:flex;gap:6px;padding:10px 14px;border-top:1px solid var(--border)}
+.sla-btn{flex:1;padding:8px;border-radius:10px;border:1px solid;background:transparent;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.sla-btn.view{border-color:#3b82f644;color:#3b82f6}
+.sla-btn.edit{border-color:#e8a02044;color:var(--gold)}
+.sla-btn.exec{border-color:#22c55e44;color:#22c55e}
+.cat-section{margin-bottom:16px}
+.cat-section-title{font-size:12px;color:var(--gold);font-weight:700;margin-bottom:8px;padding-right:4px}
+.smart-item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 14px;margin-bottom:6px;cursor:pointer}
+.smart-item.checked .smart-circle{background:var(--green);border-color:var(--green);color:white}
+.smart-item.checked .smart-name{color:var(--text2)}
+.smart-circle{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px}
+.smart-name{flex:1;font-size:14px}
+.smart-qty{font-size:11px;color:var(--text2)}
+/* EXEC */
+.exec-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.exec-item-name{font-weight:700;font-size:15px;margin-bottom:4px}
+.exec-item-stock{font-size:12px;color:var(--text2);margin-bottom:10px}
+/* ADMIN */
+.admin-filters{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.admin-filter-row{display:flex;gap:8px}
+.admin-search{width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:inherit;outline:none;box-sizing:border-box}
+.admin-search:focus{border-color:var(--gold)}
+.date-input{flex:1;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px;font-family:inherit;outline:none}
+.admin-type-filter{display:flex;gap:6px}
+.atype-btn{flex:1;padding:8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit}
+.atype-btn.active{border-color:var(--gold);color:var(--gold);background:var(--bg3)}
+.admin-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.summary-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.summary-num{font-size:22px;font-weight:800}
+.summary-label{font-size:11px;color:var(--text2);margin-top:2px}
+.admin-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.admin-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.admin-item-name{font-weight:700;font-size:14px}
+.admin-item-delta{font-size:16px;font-weight:800}
+.admin-item-meta{display:flex;gap:10px;font-size:11px;color:var(--text2);flex-wrap:wrap}
+.admin-item-note{font-size:11px;color:var(--text2);margin-top:3px}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
+.badge.in{background:#052e16;color:#22c55e}
+.badge.out{background:#2d0a0a;color:#ef4444}
+.badge.list{background:#1e1a40;color:#818cf8}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:#000000bb;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:#1e1500;border:1px solid var(--border);border-radius:18px;padding:24px;width:100%;max-width:340px}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:8px}
+.modal-text{font-size:13px;color:var(--text2);margin-bottom:20px}
+.modal-btns{display:flex;gap:8px}
+.modal-btn{flex:1;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.modal-btn.cancel{background:var(--bg3);color:var(--text2)}
+.modal-btn.confirm{background:#dc2626;color:white}
+.modal-btn.save{background:var(--gold);color:#0f0a00}
+/* NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#141000;border-top:1px solid var(--border);display:flex;padding:10px 0 22px;z-index:20}
+.nav-btn{flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:inherit;padding:6px 0}
+.nav-btn .nav-icon{font-size:20px}
+.nav-btn .nav-label{font-size:10px;color:var(--text3)}
+.nav-btn.active .nav-label{color:var(--gold)}
+/* MISC */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:30px;font-size:13px;font-weight:700;z-index:100;white-space:nowrap;pointer-events:none;animation:toastIn .2s ease}
+.toast.success{background:#052e16;border:1px solid #22c55e44;color:#86efac}
+.toast.error{background:#2d0a0a;border:1px solid #ef444444;color:#fca5a5}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.loading{display:flex;align-items:center;justify-content:center;padding:40px 0}
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;color:var(--text3);padding:40px 0;font-size:14px}
+.logout-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--text2);font-size:11px;cursor:pointer;font-family:inherit}
+/* USERS */
+.user-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.user-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.user-name-big{font-size:15px;font-weight:800}
+.ubadge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.ubadge.active{background:#052e16;color:#22c55e}
+.ubadge.pending{background:#2d1500;color:#f59e0b}
+.ubadge.disabled{background:#2d0a0a;color:#ef4444}
+.user-meta{font-size:11px;color:var(--text2);margin-bottom:10px}
+.user-actions{display:flex;gap:8px}
+.user-action-btn{flex:1;padding:8px;border-radius:10px;border:1px solid;background:transparent;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.user-action-btn.approve{border-color:#22c55e44;color:#22c55e}
+.user-action-btn.deactivate{border-color:#ef444433;color:#ef4444}
+.user-action-btn.reactivate{border-color:#3b82f644;color:#3b82f6}
+.pending-badge{background:#dc2626;color:white;border-radius:50%;width:16px;height:16px;font-size:10px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;margin-right:3px}
+.admin-section-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+.admin-section-tabs::-webkit-scrollbar{display:none}
+.ast-btn{padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.ast-btn.active{border-color:var(--gold);color:var(--gold);background:var(--bg3)}
+.users-filter{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+.users-filter::-webkit-scrollbar{display:none}
+.ufilter-btn{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.ufilter-btn.active{border-color:var(--gold);color:var(--gold);background:var(--bg3)}
+.build-tab{padding:7px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0}
+.build-tab.active{border-color:var(--gold);background:var(--bg3);color:var(--gold)}
+
+.warn-card{background:var(--card);border:1px solid #f59e0b44;border-radius:14px;padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden}
+.warn-card.empty{border-color:#ef444444}
+.warn-accent{position:absolute;right:0;top:0;bottom:0;width:3px}
+.warn-name{font-weight:700;font-size:15px;margin-bottom:2px}
+.warn-row{display:flex;justify-content:space-between;align-items:center}
+.warn-qty{font-size:22px;font-weight:800}
+.warn-info{font-size:11px;color:var(--text2);margin-top:4px}
+</style>
+</head>
+<body>
+
+<div id="authScreen" style="display:flex">
+  <div class="auth-logo">🍩</div>
+  <div class="auth-brand">Teen Donut</div>
+  <div class="auth-subtitle">سیستم انبارداری</div>
+  <div class="auth-tabs">
+    <button class="auth-tab active" id="tabLogin">ورود</button>
+    <button class="auth-tab" id="tabRegister">ثبت‌نام</button>
+  </div>
+  <div class="auth-form" id="authForm">
+    <div><div class="auth-field-label">نام کاربری</div>
+      <input class="auth-input" type="text" id="loginUser" placeholder="نام کاربری" autocomplete="username"></div>
+    <div><div class="auth-field-label">رمز عبور</div>
+      <input class="auth-input" type="password" id="loginPass" placeholder="رمز عبور" autocomplete="current-password"></div>
+    <div id="authMsg" class="auth-msg"></div>
+    <button class="auth-btn" id="loginBtn">ورود به سیستم</button>
+  </div>
+</div>
+
+<div id="appScreen">
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="header-brand">Teen Donut</div>
+        <div class="header-title" id="headerTitle">انبارداری</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:11px;color:var(--text2)" id="userLabel"></span>
+        <button class="logout-btn" id="logoutBtn">خروج</button>
+        <div style="font-size:28px">🍩</div>
+      </div>
+    </div>
+    <div class="alert-bar" id="alertBar" style="display:none">
+      <span>⚠️</span><span id="alertText"></span>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-view="inventory"><span class="nav-icon">📋</span><span class="nav-label">موجودی</span></button>
+    <button class="nav-btn" data-view="warning"><span class="nav-icon">⚠️</span><span class="nav-label" id="warnNavLabel">هشدار</span></button>
+    <button class="nav-btn" data-view="editItems"><span class="nav-icon">✏️</span><span class="nav-label">ویرایش</span></button>
+    <button class="nav-btn" data-view="checklist"><span class="nav-icon">✅</span><span class="nav-label">لیست روزانه</span></button>
+    <button class="nav-btn" data-view="add"><span class="nav-icon">➕</span><span class="nav-label">اضافه کن</span></button>
+    <button class="nav-btn" id="nav-admin" data-view="admin" style="display:none"><span class="nav-icon">📊</span><span class="nav-label" id="adminNavLabel">مدیریت</span></button>
+  </nav>
+</div>
+
+<script>
+const FB_URL='https://teen-donut-29057-default-rtdb.firebaseio.com';
+const FB_KEY='AIzaSyDHvkCH-H5frnp53Pk9W66DDaMwbATKfac';
+
+const FB={
+  async get(p){const r=await fetch(`${FB_URL}/${p}.json`);return r.json()},
+  async set(p,d){const r=await fetch(`${FB_URL}/${p}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.json()},
+  async push(p,d){const r=await fetch(`${FB_URL}/${p}.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.json()},
+  async update(p,d){const r=await fetch(`${FB_URL}/${p}.json`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.json()},
+  async remove(p){await fetch(`${FB_URL}/${p}.json`,{method:'DELETE'})},
+  listen(path,cb){
+    let last=undefined;
+    async function poll(){
+      try{const d=await FB.get(path);const s=JSON.stringify(d);if(s!==last){last=s;cb(d);}}catch(e){}
+    }
+    poll();const id=setInterval(poll,3000);return{close:()=>clearInterval(id)};
+  }
+};
+
+// ===== STATE =====
+const ADMIN_USER='mehdi',ADMIN_PASS='1234321';
+let currentUser=null,authTab='login';
+let items={},history=[],checklist={},users={},cats={},smartLists={},incomingLists={};
+let currentView='inventory',inventoryTab='all',filterCat='all';
+let selectedItemId=null,txType='in';
+let adminFilter={type:'all',from:'',to:'',search:''};
+let adminSection='history',usersFilter='all',checklistTab='daily';
+let newCat='';
+let deleteTarget=null;
+// smart checklist state
+let buildingList={},smartListView=null,smartListMode=null,execStep=0,execItems=[];
+
+// Default cats
+const DEFAULT_CATS={
+  confectionery:{label:'لوازم قنادی',icon:'🍰',color:'#e8a020'},
+  plastic:{label:'ظروف پلاستیکی',icon:'🥡',color:'#3b82f6'},
+  hygiene:{label:'لوازم بهداشتی',icon:'🧴',color:'#22c55e'}
+};
+
+function allCats(){return Object.keys(cats).length?cats:DEFAULT_CATS;}
+function todayKey(){return new Date().toISOString().slice(0,10);}
+function persianDate(ts){return new Date(ts||Date.now()).toLocaleDateString('fa-IR',{year:'numeric',month:'long',day:'numeric'});}
+function persianDateTime(ts){return new Date(ts||Date.now()).toLocaleString('fa-IR',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+function persianTime(ts){return new Date(ts||Date.now()).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'});}
+function statusColor(i){return i.quantity<=0?'#ef4444':i.quantity<=i.minQty?'#f59e0b':'#22c55e';}
+function pct(i){return Math.min(100,(i.quantity/(i.minQty*3))*100);}
+function showToast(msg,type='success'){
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
+}
+function showAuthMsg(msg,type){const el=document.getElementById('authMsg');if(!el)return;el.className=`auth-msg ${type}`;el.textContent=msg;}
+function logActivity(action,detail){
+  FB.push('activityLog',{user:currentUser?.username||'?',action,detail,date:persianDateTime(),ts:Date.now()});
+}
+
+// ===== AUTH =====
+function wireAuth(){
+  document.getElementById('tabLogin').onclick=()=>{authTab='login';document.getElementById('tabLogin').classList.add('active');document.getElementById('tabRegister').classList.remove('active');showLoginForm();};
+  document.getElementById('tabRegister').onclick=()=>{authTab='register';document.getElementById('tabRegister').classList.add('active');document.getElementById('tabLogin').classList.remove('active');showRegisterForm();};
+  document.getElementById('logoutBtn').onclick=doLogout;
+  document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.view)));
+  wireLoginBtns();
+}
+function wireLoginBtns(){
+  const lb=document.getElementById('loginBtn');if(lb)lb.onclick=doLogin;
+  const lp=document.getElementById('loginPass');if(lp)lp.onkeydown=e=>{if(e.key==='Enter')doLogin();};
+}
+function showLoginForm(){
+  document.getElementById('authForm').innerHTML=`
+    <div><div class="auth-field-label">نام کاربری</div><input class="auth-input" type="text" id="loginUser" placeholder="نام کاربری" autocomplete="username"></div>
+    <div><div class="auth-field-label">رمز عبور</div><input class="auth-input" type="password" id="loginPass" placeholder="رمز عبور" autocomplete="current-password"></div>
+    <div id="authMsg" class="auth-msg"></div>
+    <button class="auth-btn" id="loginBtn">ورود به سیستم</button>`;
+  wireLoginBtns();
+}
+function showRegisterForm(){
+  document.getElementById('authForm').innerHTML=`
+    <div><div class="auth-field-label">نام کاربری دلخواه</div><input class="auth-input" type="text" id="regUser" placeholder="مثلاً: sara" autocomplete="username"></div>
+    <div><div class="auth-field-label">رمز عبور</div><input class="auth-input" type="password" id="regPass" placeholder="رمز عبور" autocomplete="new-password"></div>
+    <div id="authMsg" class="auth-msg"></div>
+    <button class="auth-btn" id="registerBtn">ثبت‌نام</button>`;
+  document.getElementById('registerBtn').onclick=doRegister;
+}
+async function doLogin(){
+  const u=(document.getElementById('loginUser')?.value||'').trim().toLowerCase();
+  const p=(document.getElementById('loginPass')?.value||'').trim();
+  if(!u||!p){showAuthMsg('نام کاربری و رمز رو وارد کن','error');return;}
+  if(u===ADMIN_USER&&p===ADMIN_PASS){currentUser={username:ADMIN_USER,role:'admin'};enterApp();return;}
+  try{
+    const ud=await FB.get('users/'+u);
+    if(!ud){showAuthMsg('نام کاربری یا رمز اشتباه است','error');return;}
+    if(ud.password!==p){showAuthMsg('نام کاربری یا رمز اشتباه است','error');return;}
+    if(ud.status==='pending'){showAuthMsg('حسابت هنوز تایید نشده — صبر کن 🕐','pending');return;}
+    if(ud.status==='disabled'){showAuthMsg('حساب غیرفعال شده. با ادمین تماس بگیر.','error');return;}
+    currentUser={username:u,role:'user'};enterApp();
+  }catch(e){showAuthMsg('خطا در اتصال به سرور','error');}
+}
+async function doRegister(){
+  const u=(document.getElementById('regUser')?.value||'').trim().toLowerCase();
+  const p=(document.getElementById('regPass')?.value||'').trim();
+  if(!u||!p){showAuthMsg('همه فیلدها رو پر کن','error');return;}
+  if(u===ADMIN_USER){showAuthMsg('این نام کاربری قابل استفاده نیست','error');return;}
+  if(u.length<3){showAuthMsg('نام کاربری باید حداقل ۳ کاراکتر باشه','error');return;}
+  if(p.length<4){showAuthMsg('رمز باید حداقل ۴ کاراکتر باشه','error');return;}
+  if(/[^a-z0-9_]/.test(u)){showAuthMsg('فقط حروف انگلیسی کوچک، عدد و _ مجاز است','error');return;}
+  try{
+    const ex=await FB.get('users/'+u);
+    if(ex){showAuthMsg('این نام کاربری قبلاً ثبت شده','error');return;}
+    await FB.set('users/'+u,{password:p,status:'pending',createdAt:Date.now()});
+    showAuthMsg('ثبت‌نام موفق ✓ — منتظر تایید ادمین بمون 🕐','pending');
+  }catch(e){showAuthMsg('خطا در اتصال به سرور','error');}
+}
+function enterApp(){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('appScreen').style.display='block';
+  document.getElementById('userLabel').textContent=currentUser.role==='admin'?'👑 ادمین':`👤 ${currentUser.username}`;
+  if(currentUser.role==='admin')document.getElementById('nav-admin').style.display='';
+  startListeners();navigate('inventory');
+}
+function doLogout(){
+  currentUser=null;
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+  showLoginForm();
+}
+
+// ===== LISTENERS =====
+function startListeners(){
+  FB.listen('items',d=>{items=d||{};if(Object.keys(items).length===0&&currentUser?.role==='admin')seedData();updateAlertBar();updateWarnBadge();if(currentView==='inventory')renderInventory();else if(currentView==='warning')renderWarningPage();else if(currentView==='editItems')renderEditPage();});
+  FB.listen('history',d=>{const r=d||{};history=Object.entries(r).map(([k,v])=>({...v,_key:k})).sort((a,b)=>b.ts-a.ts);if(currentView==='admin'&&adminSection==='history')renderAdminHistory();});
+  FB.listen('checklist/'+todayKey(),d=>{checklist=d||{};if(currentView==='checklist')renderChecklist();});
+  FB.listen('users',d=>{users=d||{};updatePendingBadge();if(currentView==='admin'&&adminSection==='users')renderAdminUsers();});
+  FB.listen('cats',d=>{cats=d||{};});
+  FB.listen('smartLists',d=>{smartLists=d||{};if(currentView==='checklist')renderChecklist();if(currentView==='admin'&&adminSection==='lists')renderAdminLists();});
+  FB.listen('incomingLists',d=>{incomingLists=d||{};if(currentView==='checklist')renderChecklist();if(currentView==='admin'&&adminSection==='incoming')renderAdminIncoming();});
+}
+function updatePendingBadge(){
+  if(currentUser?.role!=='admin')return;
+  const n=Object.values(users).filter(u=>u.status==='pending').length;
+  const lbl=document.getElementById('adminNavLabel');
+  if(lbl)lbl.innerHTML=n>0?`مدیریت <span class="pending-badge">${n}</span>`:'مدیریت';
+}
+function updateAlertBar(){
+  const low=Object.values(items).filter(i=>i.quantity<=i.minQty);
+  const bar=document.getElementById('alertBar');
+  if(low.length>0){bar.style.display='flex';document.getElementById('alertText').textContent=`${low.length} آیتم کم‌موجود`;}
+  else bar.style.display='none';
+}
+async function seedData(){
+  const seed=[
+    {name:'آرد',category:'raw',unit:'کیلو',quantity:25,minQty:10},
+    {name:'شکر',category:'raw',unit:'کیلو',quantity:8,minQty:10},
+    {name:'کره',category:'raw',unit:'کیلو',quantity:5,minQty:3},
+    {name:'جعبه دونات',category:'packaging',unit:'عدد',quantity:150,minQty:50},
+    {name:'کیسه نایلون',category:'packaging',unit:'عدد',quantity:200,minQty:100},
+    {name:'دستکش یکبار مصرف',category:'equipment',unit:'جفت',quantity:30,minQty:20},
+  ];
+  for(const i of seed)await FB.push('items',i);
+}
+
+// ===== NAV =====
+function navigate(view){
+  if(view==='admin'&&currentUser?.role!=='admin')return;
+  currentView=view;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.querySelector(`.nav-btn[data-view="${view}"]`);if(el)el.classList.add('active');
+  const titles={inventory:'موجودی',warning:'هشدار موجودی',editItems:'ویرایش آیتم‌ها',checklist:'لیست روزانه',add:'آیتم جدید',admin:'پنل مدیریت',transaction:'',edit:'ویرایش آیتم'};
+  document.getElementById('headerTitle').textContent=titles[view]||'';
+  document.getElementById('mainContent').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  setTimeout(()=>{
+    if(view==='inventory')renderInventory();
+    else if(view==='warning')renderWarningPage();
+    else if(view==='editItems')renderEditPage();
+    else if(view==='checklist')renderChecklist();
+    else if(view==='add')renderAdd();
+    else if(view==='admin')renderAdmin();
+    else if(view==='transaction')renderTransaction();
+    else if(view==='edit')renderEdit();
+  },60);
+}
+
+// ===== INVENTORY =====
+function renderInventory(){
+  const c=document.getElementById('mainContent');
+  const CATS=allCats();
+  const all=Object.entries(items);
+  const filtered=filterCat==='all'?all:all.filter(([,i])=>i.category===filterCat);
+  let html=`<div class="filter-scroll"><button class="filter-btn ${filterCat==='all'?'active':''}" data-f="all">📋 همه</button>`;
+  for(const [k,v] of Object.entries(CATS))
+    html+=`<button class="filter-btn ${filterCat===k?'active':''}" data-f="${k}">${v.icon} ${v.label}</button>`;
+  html+=`</div><div class="items-list">`;
+  if(!filtered.length)html+=`<div class="empty-state">آیتمی پیدا نشد</div>`;
+  else for(const [id,item] of filtered){
+    const sc=statusColor(item),cat=CATS[item.category]||{icon:'📦',color:'#666'},p=pct(item);
+    const lc=item.quantity<=0?'empty':item.quantity<=item.minQty?'low':'';
+    html+=`<div class="item-card ${lc}">
+      <div class="item-accent" style="background:${cat.color}"></div>
+      <div class="item-row" data-tx="${id}">
+        <div><div class="item-name">${item.name}</div><div class="item-cat">${cat.icon} ${cat.label||item.category}</div></div>
+        <div style="text-align:left"><div class="item-qty" style="color:${sc}">${item.quantity}</div><div class="item-unit">${item.unit}</div></div>
+      </div>
+      <div class="progress-wrap"><div class="progress-bar" style="width:${p}%;background:${sc}"></div></div>
+      <div class="item-min">حداقل: ${item.minQty} ${item.unit}</div>
+      <div class="item-actions">
+        <button class="item-action-btn tx" data-tx="${id}">📥 ورود / خروج</button>
+      </div>
+    </div>`;
+  }
+  html+=`</div>`;
+  c.innerHTML=html;
+  c.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{filterCat=b.dataset.f;renderInventory();});
+  c.querySelectorAll('[data-tx]').forEach(b=>b.onclick=()=>{selectedItemId=b.dataset.tx;txType='in';navigate('transaction');});
+  document.getElementById('alertBar').onclick=()=>navigate('warning');
+}
+
+// ===== WARNING PAGE =====
+function renderWarningPage(){
+  const c=document.getElementById('mainContent');
+  const CATS=allCats();
+  const low=Object.entries(items).filter(([,i])=>i.quantity<=i.minQty);
+  updateWarnBadge();
+  if(!low.length){c.innerHTML=`<div class="empty-state">✅ همه موجودی‌ها کافی هستن</div>`;return;}
+  let html='';
+  for(const [id,item] of low){
+    const sc=statusColor(item),cat=CATS[item.category]||{icon:'📦',color:'#666'};
+    const lc=item.quantity<=0?'empty':'';
+    html+=`<div class="warn-card ${lc}">
+      <div class="warn-accent" style="background:${sc}"></div>
+      <div class="warn-row">
+        <div><div class="warn-name">${item.name}</div><div class="warn-info">${cat.icon} ${cat.label||item.category}</div></div>
+        <div style="text-align:left"><div class="warn-qty" style="color:${sc}">${item.quantity}</div><div style="font-size:11px;color:var(--text2)">${item.unit}</div></div>
+      </div>
+      <div class="warn-info" style="margin-top:6px">حداقل: ${item.minQty} ${item.unit} &nbsp;|&nbsp; کمبود: <span style="color:${sc}">${Math.max(0,item.minQty-item.quantity)} ${item.unit}</span></div>
+      <div class="item-actions" style="margin-top:10px">
+        <button class="item-action-btn tx" data-tx="${id}">📥 ورود موجودی</button>
+      </div>
+    </div>`;
+  }
+  c.innerHTML=html;
+  c.querySelectorAll('[data-tx]').forEach(b=>b.onclick=()=>{selectedItemId=b.dataset.tx;txType='in';navigate('transaction');});
+}
+
+function updateWarnBadge(){
+  const low=Object.values(items).filter(i=>i.quantity<=i.minQty).length;
+  const lbl=document.getElementById('warnNavLabel');
+  if(lbl)lbl.innerHTML=low>0?`هشدار <span class="pending-badge">${low}</span>`:'هشدار';
+}
+
+// ===== EDIT PAGE =====
+function renderEditPage(){
+  const c=document.getElementById('mainContent');
+  const CATS=allCats();
+  const isAdmin=currentUser?.role==='admin';
+  const all=Object.entries(items);
+  let html=`<div style="display:flex;gap:8px;margin-bottom:14px">
+    <input class="admin-search" type="text" id="editSearch" placeholder="🔍 جستجوی آیتم...">
+  </div>`;
+  if(!all.length)html+=`<div class="empty-state">آیتمی وجود ندارد</div>`;
+  else for(const [id,item] of all){
+    const cat=CATS[item.category]||{icon:'📦',color:'#666',label:item.category};
+    html+=`<div class="item-card edit-item">
+      <div class="item-accent" style="background:${cat.color}"></div>
+      <div class="item-row">
+        <div><div class="item-name">${item.name}</div><div class="item-cat">${cat.icon} ${cat.label}</div></div>
+        <div style="text-align:left"><div class="item-qty" style="color:${statusColor(item)}">${item.quantity}</div><div class="item-unit">${item.unit}</div></div>
+      </div>
+      <div class="item-actions">
+        <button class="item-action-btn edit" data-edit="${id}">✏️ ویرایش</button>
+        ${isAdmin?`<button class="item-action-btn del" data-del="${id}" data-dname="${item.name.replace(/"/g,'&quot;')}">🗑 حذف</button>`:''}
+      </div>
+    </div>`;
+  }
+  c.innerHTML=html;
+
+  // search filter
+  document.getElementById('editSearch').oninput=function(){
+    const q=this.value.trim().toLowerCase();
+    c.querySelectorAll('.edit-item').forEach(el=>{
+      const name=el.querySelector('.item-name').textContent.toLowerCase();
+      el.style.display=name.includes(q)?'':'none';
+    });
+  };
+
+  c.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{selectedItemId=b.dataset.edit;navigate('edit');});
+  c.querySelectorAll('[data-del]').forEach(b=>b.onclick=e=>{e.stopPropagation();showDeleteModal(b.dataset.del,b.dataset.dname);});
+}
+
+// ===== EDIT ITEM =====
+function renderEdit(){
+  const item=items[selectedItemId];if(!item){navigate('inventory');return;}
+  const CATS=allCats();
+  const c=document.getElementById('mainContent');
+  c.innerHTML=`
+    <button class="back-btn" id="editBack">← برگشت</button>
+    <div class="section-title">ویرایش آیتم</div>
+    <div class="field-wrap"><div class="field-label">نام محصول</div>
+      <input class="field-input small" id="eName" value="${item.name}"></div>
+    <div class="field-wrap"><div class="field-label">واحد اندازه‌گیری</div>
+      <input class="field-input small" id="eUnit" value="${item.unit}"></div>
+    <div class="field-wrap"><div class="field-label">حداقل موجودی (هشدار)</div>
+      <input class="field-input" type="number" id="eMin" value="${item.minQty}" inputmode="numeric"></div>
+    <div class="field-wrap"><div class="field-label">دسته‌بندی</div>
+      <div class="cat-grid" id="editCatGrid"></div></div>
+    <button class="submit-btn gold" id="saveEdit">ذخیره تغییرات</button>`;
+  let selCat=item.category;
+  function buildEditCats(){
+    const g=document.getElementById('editCatGrid');if(!g)return;g.innerHTML='';
+    for(const [k,v] of Object.entries(CATS)){
+      const btn=document.createElement('button');btn.className='cat-btn';
+      btn.innerHTML=`${v.icon}<br>${v.label}`;
+      if(selCat===k)btn.style.cssText=`border-color:${v.color};color:${v.color};background:var(--bg3)`;
+      btn.onclick=()=>{selCat=k;buildEditCats();};
+      g.appendChild(btn);
+    }
+  }
+  buildEditCats();
+  document.getElementById('editBack').onclick=()=>navigate('editItems');
+  document.getElementById('saveEdit').onclick=async()=>{
+    const name=document.getElementById('eName').value.trim();
+    const unit=document.getElementById('eUnit').value.trim();
+    const min=parseFloat(document.getElementById('eMin').value);
+    if(!name||!unit||isNaN(min)){showToast('همه فیلدها رو پر کن','error');return;}
+    await FB.update('items/'+selectedItemId,{name,unit,minQty:min,category:selCat});
+    logActivity('ویرایش آیتم',`${name} ویرایش شد`);
+    showToast('تغییرات ذخیره شد ✓');
+    navigate('editItems');
+  };
+}
+
+// ===== DELETE =====
+function showDeleteModal(id,name){
+  deleteTarget=id;
+  const o=document.createElement('div');o.className='modal-overlay';
+  o.innerHTML=`<div class="modal"><div class="modal-title">حذف آیتم</div>
+    <div class="modal-text">آیا مطمئنی که میخوای <strong>${name}</strong> رو حذف کنی؟</div>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" id="mCan">انصراف</button>
+      <button class="modal-btn confirm" id="mCon">حذف کن</button>
+    </div></div>`;
+  document.body.appendChild(o);
+  document.getElementById('mCan').onclick=()=>o.remove();
+  document.getElementById('mCon').onclick=async()=>{
+    const name=items[deleteTarget]?.name||'آیتم';
+    await FB.remove('items/'+deleteTarget);
+    logActivity('حذف آیتم',`${name} حذف شد`);
+    showToast('حذف شد');deleteTarget=null;o.remove();navigate('editItems');
+  };
+}
+
+// ===== TRANSACTION =====
+function renderTransaction(){
+  const item=items[selectedItemId];if(!item){navigate('inventory');return;}
+  const CATS=allCats();
+  const sc=statusColor(item),cat=CATS[item.category]||{icon:'📦'};
+  document.getElementById('headerTitle').textContent=item.name;
+  const c=document.getElementById('mainContent');
+  c.innerHTML=`
+    <button class="back-btn" id="txBack">← برگشت</button>
+    <div class="tx-card">
+      <div class="tx-item-name">${cat.icon} ${item.name}</div>
+      <div class="tx-qty" style="color:${sc}">${item.quantity}</div>
+      <div class="tx-unit">${item.unit} موجود</div>
+    </div>
+    <div class="type-toggle">
+      <button class="type-btn in ${txType==='in'?'active':''}" id="btnIn">ورود ✅</button>
+      <button class="type-btn out ${txType==='out'?'active':''}" id="btnOut">خروج ❌</button>
+    </div>
+    <div class="field-wrap"><div class="field-label">مقدار (${item.unit})</div>
+      <input class="field-input" type="number" id="txQty" placeholder="مثلاً ۵" inputmode="numeric"></div>
+    <div class="field-wrap"><div class="field-label">یادداشت (اختیاری)</div>
+      <input class="field-input small" type="text" id="txNote" placeholder="مثلاً: خرید از انبار تهران"></div>
+    <button class="submit-btn ${txType==='in'?'green':'red'}" id="txSub">${txType==='in'?'ثبت ورود':'ثبت خروج'}</button>`;
+  document.getElementById('txBack').onclick=()=>navigate('inventory');
+  document.getElementById('btnIn').onclick=()=>{txType='in';document.getElementById('btnIn').className='type-btn in active';document.getElementById('btnOut').className='type-btn out';const b=document.getElementById('txSub');b.className='submit-btn green';b.textContent='ثبت ورود';};
+  document.getElementById('btnOut').onclick=()=>{txType='out';document.getElementById('btnOut').className='type-btn out active';document.getElementById('btnIn').className='type-btn in';const b=document.getElementById('txSub');b.className='submit-btn red';b.textContent='ثبت خروج';};
+  document.getElementById('txSub').onclick=async()=>{
+    const qty=parseFloat(document.getElementById('txQty')?.value);
+    const note=document.getElementById('txNote')?.value||'';
+    if(!qty||qty<=0){showToast('مقدار رو درست وارد کن','error');return;}
+    const newQty=txType==='in'?item.quantity+qty:Math.max(0,item.quantity-qty);
+    await FB.update('items/'+selectedItemId,{quantity:newQty});
+    await FB.push('history',{itemId:selectedItemId,itemName:item.name,unit:item.unit,type:txType,qty,note,user:currentUser?.username||'?',date:persianDateTime(),ts:Date.now()});
+    logActivity(txType==='in'?'ورود موجودی':'خروج موجودی',`${item.name}: ${txType==='in'?'+':'-'}${qty} ${item.unit}${note?' — '+note:''}`);
+    showToast(txType==='in'?`${qty} ${item.unit} اضافه شد ✓`:`${qty} ${item.unit} کم شد ✓`);
+    navigate('inventory');
+  };
+}
+
+// ===== ADD ITEM =====
+function renderAdd(){
+  const CATS=allCats();
+  const c=document.getElementById('mainContent');
+  if(!newCat)newCat=Object.keys(CATS)[0]||'raw';
+  c.innerHTML=`
+    <div class="section-title">آیتم جدید</div>
+    <div class="field-wrap"><div class="field-label">نام محصول</div><input class="field-input small" id="newName" placeholder="مثلاً: وانیل"></div>
+    <div class="field-wrap"><div class="field-label">واحد اندازه‌گیری</div><input class="field-input small" id="newUnit" placeholder="کیلو / عدد / لیتر / بسته"></div>
+    <div class="field-wrap"><div class="field-label">موجودی اولیه</div><input class="field-input" type="number" id="newQty" placeholder="0" inputmode="numeric"></div>
+    <div class="field-wrap"><div class="field-label">حداقل موجودی (هشدار)</div><input class="field-input" type="number" id="newMin" placeholder="5" inputmode="numeric"></div>
+    <div class="field-wrap"><div class="field-label">دسته‌بندی</div><div class="cat-grid" id="catSel"></div></div>
+    <button class="submit-btn gold" id="doAdd">اضافه کردن</button>
+    <div style="margin-top:12px"></div>
+    <button class="submit-btn blue" id="addCatBtn2" style="margin-top:8px">➕ دسته‌بندی جدید</button>`;
+  buildCatBtns('catSel');
+  document.getElementById('addCatBtn2').onclick=showAddCatModal;
+  document.getElementById('doAdd').onclick=async()=>{
+    const name=(document.getElementById('newName')?.value||'').trim();
+    const unit=(document.getElementById('newUnit')?.value||'').trim();
+    const qty=parseFloat(document.getElementById('newQty')?.value);
+    const min=parseFloat(document.getElementById('newMin')?.value);
+    if(!name||!unit||isNaN(qty)||isNaN(min)){showToast('همه فیلدها رو پر کن','error');return;}
+    await FB.push('items',{name,unit,category:newCat,quantity:qty,minQty:min});
+    logActivity('اضافه کردن آیتم',`${name} اضافه شد`);
+    showToast(`${name} اضافه شد ✓`);navigate('inventory');
+  };
+}
+function buildCatBtns(selId){
+  const CATS=allCats();
+  const sel=document.getElementById(selId);if(!sel)return;sel.innerHTML='';
+  for(const [k,v] of Object.entries(CATS)){
+    const btn=document.createElement('button');btn.className='cat-btn';
+    btn.innerHTML=`${v.icon}<br>${v.label}`;
+    if(newCat===k)btn.style.cssText=`border-color:${v.color};color:${v.color};background:var(--bg3)`;
+    btn.onclick=()=>{newCat=k;buildCatBtns(selId);};
+    sel.appendChild(btn);
+  }
+}
+
+// ===== ADD CATEGORY MODAL =====
+function showAddCatModal(){
+  const o=document.createElement('div');o.className='modal-overlay';o.id='catModal';
+  o.innerHTML=`<div class="modal">
+    <div class="modal-title">دسته‌بندی جدید</div>
+    <div class="field-wrap"><div class="field-label">نام دسته‌بندی</div><input class="field-input small" id="catName" placeholder="مثلاً: نوشیدنی"></div>
+    <div class="field-wrap"><div class="field-label">آیکون (یک ایموجی)</div><input class="field-input small" id="catIcon" placeholder="🥤" maxlength="2"></div>
+    <div class="field-wrap"><div class="field-label">رنگ</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="colorPick">
+        ${['#e8a020','#22c55e','#ef4444','#3b82f6','#a855f7','#ec4899','#14b8a6','#f97316'].map(c=>`<div data-c="${c}" style="width:32px;height:32px;border-radius:50%;background:${c};cursor:pointer;border:3px solid transparent"></div>`).join('')}
+      </div>
+    </div>
+    <div id="catMsg" class="auth-msg"></div>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" id="catCan">انصراف</button>
+      <button class="modal-btn save" id="catSave">ذخیره</button>
+    </div>
+  </div>`;
+  document.body.appendChild(o);
+  let selColor='#e8a020';
+  o.querySelectorAll('[data-c]').forEach(el=>{
+    el.onclick=()=>{selColor=el.dataset.c;o.querySelectorAll('[data-c]').forEach(x=>x.style.border='3px solid transparent');el.style.border=`3px solid white`;};
+  });
+  document.getElementById('catCan').onclick=()=>o.remove();
+  document.getElementById('catSave').onclick=async()=>{
+    const name=document.getElementById('catName').value.trim();
+    const icon=document.getElementById('catIcon').value.trim()||'📦';
+    if(!name){document.getElementById('catMsg').className='auth-msg error';document.getElementById('catMsg').textContent='نام رو وارد کن';return;}
+    const key=name.replace(/\s+/g,'_').toLowerCase()+'_'+Date.now();
+    const CATS=allCats();
+    const merged={...CATS,[key]:{label:name,icon,color:selColor}};
+    await FB.set('cats',merged);
+    logActivity('ایجاد دسته‌بندی',`${name} اضافه شد`);
+    newCat=key;showToast(`${name} اضافه شد ✓`);o.remove();
+    if(currentView==='add')renderAdd();else if(currentView==='inventory')renderInventory();
+  };
+}
+
+// ===== CHECKLIST =====
+function renderChecklist(){
+  const c=document.getElementById('mainContent');
+  let html=`<div class="page-tabs">
+    <button class="ptab ${checklistTab==='daily'?'active':''}" data-ctab="daily">✅ لیست روزانه</button>
+    <button class="ptab ${checklistTab==='outgoing'?'active':''}" data-ctab="outgoing">📦 لیست انبار</button>
+    <button class="ptab ${checklistTab==='incoming'?'active':''}" data-ctab="incoming">📥 ورودی</button>
+  </div>`;
+  c.innerHTML=html;
+  c.querySelectorAll('[data-ctab]').forEach(b=>b.onclick=()=>{checklistTab=b.dataset.ctab;renderChecklist();});
+
+  const sub=document.createElement('div');
+  c.appendChild(sub);
+  if(checklistTab==='daily') renderDailyChecklist(sub);
+  else if(checklistTab==='outgoing') renderOutgoingTab(sub);
+  else renderIncomingTab(sub);
+}
+
+function renderDailyChecklist(c){
+  const entries=Object.entries(checklist);
+  const done=entries.filter(([,v])=>v.done).length,total=entries.length;
+  const progress=total>0?Math.round((done/total)*100):0;
+  let html='';
+  if(total>0)html+=`<div class="checklist-progress"><div class="checklist-progress-text"><span>پیشرفت امروز</span><span>${done} از ${total}</span></div><div class="checklist-bar-wrap"><div class="checklist-bar" style="width:${progress}%"></div></div></div>`;
+  html+=`<div class="add-check-row"><input class="add-check-input" type="text" id="checkInput" placeholder="مثلاً: آرد ۵ کیلو"><button class="add-check-btn" id="addCkBtn">+</button></div>`;
+  if(!entries.length)html+=`<div class="empty-state" style="padding:20px 0">لیست امروز خالیه</div>`;
+  else{
+    for(const [key,item] of entries)
+      html+=`<div class="check-item ${item.done?'done':''}" data-ck="${key}"><div class="check-circle ${item.done?'done':''}">${item.done?'✓':''}</div><div class="check-text ${item.done?'done':''}">${item.text}</div><button class="check-del" data-dck="${key}">✕</button></div>`;
+    if(done>0)html+=`<button class="clear-done-btn" id="clrDone">حذف تیک‌خورده‌ها</button>`;
+  }
+  c.innerHTML=html;
+  const addFn=()=>{const inp=document.getElementById('checkInput'),txt=inp?.value.trim();if(!txt)return;FB.push('checklist/'+todayKey(),{text:txt,done:false});inp.value='';showToast('اضافه شد ✓');};
+  document.getElementById('addCkBtn').onclick=addFn;
+  document.getElementById('checkInput').onkeydown=e=>{if(e.key==='Enter')addFn();};
+  const cd=document.getElementById('clrDone');
+  if(cd)cd.onclick=()=>{entries.filter(([,v])=>v.done).forEach(([k])=>FB.remove('checklist/'+todayKey()+'/'+k));showToast('پاک شد ✓');};
+  c.querySelectorAll('[data-ck]').forEach(el=>el.onclick=()=>FB.update('checklist/'+todayKey()+'/'+el.dataset.ck,{done:!checklist[el.dataset.ck].done}));
+  c.querySelectorAll('[data-dck]').forEach(b=>b.onclick=e=>{e.stopPropagation();FB.remove('checklist/'+todayKey()+'/'+b.dataset.dck);});
+}
+
+function renderOutgoingTab(c){
+  const lists=Object.entries(smartLists).sort((a,b)=>b[1].ts-a[1].ts);
+  let html=`<button class="submit-btn gold" id="createSmartListBtn" style="margin-bottom:16px">➕ ایجاد لیست انبار</button>`;
+  const visibleLists=lists.filter(([,lst])=>!lst.executed||(lst.lockedUntil&&lst.lockedUntil>Date.now()));
+  if(!visibleLists.length) html+=`<div class="empty-state">لیست فعالی وجود ندارد</div>`;
+  else for(const [lid,lst] of visibleLists){
+    const itemCount=Object.keys(lst.items||{}).length;
+    const checkedCount=Object.values(lst.items||{}).filter(i=>i.checked).length;
+    const isExecuted=lst.executed&&lst.lockedUntil>Date.now();
+    html+=`<div class="smart-list-card" style="${isExecuted?'border-color:#22c55e44':''}">
+      <div class="smart-list-header">
+        <div>
+          <div class="smart-list-title">${lst.title||'لیست انبار'} ${isExecuted?'<span style="font-size:11px;color:var(--green)">✅ انجام شده</span>':''}</div>
+          <div class="smart-list-meta">${persianDate(lst.ts)} &nbsp;|&nbsp; ${checkedCount} از ${itemCount} آیتم ${isExecuted?`&nbsp;|&nbsp; 👤 ${lst.executedBy}`:''}</div>
+        </div>
+        <div style="font-size:11px;color:var(--text2)">${lst.createdBy||''}</div>
+      </div>
+      <div class="smart-list-actions">
+        <button class="sla-btn view" data-slid="${lid}" data-slmode="view">👁 بازدید</button>
+        ${!isExecuted?`<button class="sla-btn edit" data-slid="${lid}" data-slmode="edit">✏️ ادیت</button>`:''}
+        ${!isExecuted?`<button class="sla-btn exec" data-slid="${lid}" data-slmode="exec">▶️ انجام</button>`:'<button class="sla-btn view" style="opacity:.4;cursor:default">🔒 قفل</button>'}
+      </div>
+    </div>`;
+  }
+  c.innerHTML=html;
+  document.getElementById('createSmartListBtn').onclick=showBuildSmartList;
+  c.querySelectorAll('[data-slid]').forEach(b=>b.onclick=()=>showSmartList(b.dataset.slid,b.dataset.slmode));
+}
+
+function renderIncomingTab(c){
+  const lists=Object.entries(incomingLists).sort((a,b)=>b[1].ts-a[1].ts);
+  const visibleLists=lists.filter(([,lst])=>!lst.confirmed||(lst.lockedUntil&&lst.lockedUntil>Date.now()));
+  let html=`<button class="submit-btn blue" id="createIncomingBtn" style="margin-bottom:16px">➕ ثبت ورود جنس</button>`;
+  if(!visibleLists.length) html+=`<div class="empty-state">ورودی‌ای ثبت نشده</div>`;
+  else for(const [lid,lst] of visibleLists){
+    const itemCount=Object.keys(lst.items||{}).length;
+    const checkedCount=Object.values(lst.items||{}).filter(i=>i.checked).length;
+    const isConfirmed=lst.confirmed&&lst.lockedUntil>Date.now();
+    html+=`<div class="smart-list-card" style="${isConfirmed?'border-color:#3b82f644':''}">
+      <div class="smart-list-header">
+        <div>
+          <div class="smart-list-title">${lst.title||'ورود جنس'} ${isConfirmed?'<span style="font-size:11px;color:#3b82f6">✅ ثبت شده</span>':''}</div>
+          <div class="smart-list-meta">${persianDate(lst.ts)} &nbsp;|&nbsp; ${checkedCount} از ${itemCount} آیتم ${isConfirmed?`&nbsp;|&nbsp; 👤 ${lst.confirmedBy}`:''}</div>
+        </div>
+        <div style="font-size:11px;color:var(--text2)">${lst.createdBy||''}</div>
+      </div>
+      <div class="smart-list-actions">
+        <button class="sla-btn view" data-ilid="${lid}" data-ilmode="view">👁 بازدید</button>
+        ${!isConfirmed?`<button class="sla-btn edit" data-ilid="${lid}" data-ilmode="edit">✏️ ادیت</button>`:''}
+        ${!isConfirmed?`<button class="sla-btn exec" data-ilid="${lid}" data-ilmode="exec">📥 ورود</button>`:'<button class="sla-btn view" style="opacity:.4;cursor:default">🔒 قفل</button>'}
+      </div>
+    </div>`;
+  }
+  c.innerHTML=html;
+  document.getElementById('createIncomingBtn').onclick=showBuildIncomingList;
+  c.querySelectorAll('[data-ilid]').forEach(b=>b.onclick=()=>showIncomingList(b.dataset.ilid,b.dataset.ilmode));
+}
+
+// ===== BUILD INCOMING LIST =====
+function showBuildIncomingList(){
+  const CATS=allCats();
+  let buildIncoming={};
+  let activeCat=Object.keys(CATS)[0]||'confectionery';
+  const o=document.createElement('div');o.className='modal-overlay';o.id='incomingModal';
+  o.style.cssText='align-items:flex-start;padding:0;overflow:hidden';
+
+  function buildHTML(){
+    const checkedCount=Object.keys(buildIncoming).length;
+    let tabsHtml='';
+    for(const [ck,cv] of Object.entries(CATS)){
+      const catItems=Object.entries(items).filter(([,i])=>i.category===ck);
+      if(!catItems.length)continue;
+      const cnt=catItems.filter(([id])=>buildIncoming[id]).length;
+      tabsHtml+=`<button class="build-tab ${activeCat===ck?'active':''}" data-bcat="${ck}">${cv.icon} ${cv.label}${cnt>0?` <span class="pending-badge" style="background:var(--blue)">${cnt}</span>`:''}</button>`;
+    }
+    const catItems=Object.entries(items).filter(([,i])=>i.category===activeCat);
+    let itemsHtml='';
+    if(!catItems.length) itemsHtml=`<div class="empty-state">آیتمی نیست</div>`;
+    else for(const [id,item] of catItems){
+      const checked=buildIncoming[id];
+      itemsHtml+=`<div class="smart-item ${checked?'checked':''}" data-bid="${id}">
+        <div class="smart-circle">${checked?'✓':''}</div>
+        <div class="smart-name">${item.name}</div>
+        <div class="smart-qty">${item.quantity} ${item.unit}</div>
+      </div>`;
+    }
+    return`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)">
+      <div style="padding:16px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-size:16px;font-weight:800">📥 ثبت ورود جنس</div>
+          <div style="font-size:12px;color:#3b82f6;font-weight:700">${checkedCount} انتخاب شده</div>
+        </div>
+        <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px">${tabsHtml}</div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:12px 16px">${itemsHtml}</div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0">
+        <button id="inCan" style="flex:1;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">انصراف</button>
+        <button id="inSave" style="flex:2;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:${checkedCount?'#2563eb':'#333'};color:${checkedCount?'white':'#666'}" ${!checkedCount?'disabled':''}>
+          ذخیره ${checkedCount?`(${checkedCount} آیتم)`:''}
+        </button>
+      </div>
+    </div>`;
+  }
+
+  o.innerHTML=buildHTML();
+  document.body.appendChild(o);
+
+  function rewire(){
+    document.getElementById('inCan').onclick=()=>o.remove();
+    document.getElementById('inSave').onclick=async()=>{
+      if(!Object.keys(buildIncoming).length)return;
+      const listItems={};
+      for(const id of Object.keys(buildIncoming)){
+        const item=items[id];
+        listItems[id]={name:item.name,unit:item.unit,category:item.category,checked:true,qty:0};
+      }
+      await FB.push('incomingLists',{
+        title:'ورود جنس '+persianDate(),
+        ts:Date.now(),createdBy:currentUser?.username||'?',
+        items:listItems
+      });
+      logActivity('ایجاد لیست ورودی',`${Object.keys(buildIncoming).length} آیتم`);
+      showToast('لیست ورودی ذخیره شد ✓');o.remove();
+    };
+    o.querySelectorAll('[data-bcat]').forEach(b=>b.onclick=()=>{activeCat=b.dataset.bcat;o.innerHTML=buildHTML();rewire();});
+    o.querySelectorAll('[data-bid]').forEach(el=>el.onclick=()=>{
+      const id=el.dataset.bid;
+      if(buildIncoming[id])delete buildIncoming[id];else buildIncoming[id]=true;
+      o.innerHTML=buildHTML();rewire();
+    });
+  }
+  rewire();
+}
+
+// ===== SHOW INCOMING LIST =====
+function showIncomingList(lid,mode){
+  const lst=incomingLists[lid];if(!lst)return;
+  const CATS=allCats();
+  const listItems=lst.items||{};
+
+  if(mode==='exec'){
+    // ورود جنس — مثل exec ولی اضافه میکنه
+    const toExec=Object.entries(listItems).filter(([,v])=>v.checked);
+    if(!toExec.length){showToast('هیچ آیتمی انتخاب نشده','error');return;}
+    const collected={};
+    let step=0;
+    const oe=document.createElement('div');oe.className='modal-overlay';oe.id='inExecScreen';
+    oe.style.cssText='align-items:flex-start;padding:0;overflow:hidden';
+
+    function renderStep(){
+      const done=step>=toExec.length;
+      if(done){
+        let sumHtml='';
+        for(const [id,li] of toExec){
+          const qty=collected[id]||0;
+          sumHtml+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:14px">${li.name}</span>
+            <span style="font-size:14px;font-weight:700;color:${qty>0?'#3b82f6':'var(--text3)'}">${qty>0?'+'+qty+' '+li.unit:'رد شد'}</span>
+          </div>`;
+        }
+        oe.innerHTML=`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)">
+          <div style="padding:16px;border-bottom:1px solid var(--border);flex-shrink:0">
+            <div style="font-size:16px;font-weight:800;color:#3b82f6;margin-bottom:4px">📥 مرور نهایی ورودی</div>
+            <div style="font-size:12px;color:var(--text2)">${lst.title} — ${currentUser?.username}</div>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:12px 16px">${sumHtml}</div>
+          <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0">
+            <button id="inExBack" style="flex:1;padding:14px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">← برگشت</button>
+            <button id="inExConfirm" style="flex:2;padding:14px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:#2563eb;color:white">تایید نهایی ✓</button>
+          </div>
+        </div>`;
+        document.getElementById('inExBack').onclick=()=>{step=toExec.length-1;renderStep();};
+        document.getElementById('inExConfirm').onclick=async()=>{
+          document.getElementById('inExConfirm').disabled=true;
+          document.getElementById('inExConfirm').textContent='در حال ثبت...';
+          const execRecord={confirmedBy:currentUser?.username||'?',confirmedAt:Date.now(),date:persianDateTime(),items:{}};
+          for(const [id,li] of toExec){
+            const qty=collected[id]||0;
+            execRecord.items[id]={name:li.name,unit:li.unit,qty};
+            if(qty>0&&items[id]){
+              await FB.update('items/'+id,{quantity:items[id].quantity+qty});
+              await FB.push('history',{itemId:id,itemName:li.name,unit:li.unit,type:'in',qty,note:'ورود جنس: '+lst.title,user:currentUser?.username||'?',date:persianDateTime(),ts:Date.now()});
+            }
+          }
+          const endOfDay=new Date();endOfDay.setHours(23,59,59,999);
+          await FB.update('incomingLists/'+lid,{confirmed:true,confirmedBy:currentUser?.username||'?',confirmedAt:Date.now(),lockedUntil:endOfDay.getTime(),execRecord});
+          logActivity('ثبت ورود جنس',`${lst.title} توسط ${currentUser?.username}`);
+          showToast('ورود جنس ثبت شد ✓');
+          oe.innerHTML=`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:430px;margin:0 auto;padding:32px">
+            <div style="font-size:60px;margin-bottom:16px">📥</div>
+            <div style="font-size:20px;font-weight:800;margin-bottom:8px">ثبت شد!</div>
+            <div style="font-size:13px;color:var(--text2);margin-bottom:32px;text-align:center">${lst.title}<br>توسط ${currentUser?.username}</div>
+            <button id="inExDone" style="width:100%;padding:14px;border-radius:14px;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;background:#2563eb;color:white">بستن</button>
+          </div>`;
+          document.getElementById('inExDone').onclick=()=>oe.remove();
+        };
+        return;
+      }
+      const [id,li]=toExec[step];
+      const item=items[id]||{quantity:0};
+      const prog=Math.round((step/toExec.length)*100);
+      oe.innerHTML=`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto">
+        <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <div style="font-size:12px;color:var(--text2)">${lst.title}</div>
+            <div style="font-size:12px;font-weight:700;color:#3b82f6">${step+1} از ${toExec.length}</div>
+          </div>
+          <div style="height:4px;background:var(--border);border-radius:4px">
+            <div style="height:100%;width:${prog}%;background:#3b82f6;border-radius:4px;transition:width .3s"></div>
+          </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:24px 16px 16px">
+          <div style="font-size:24px;font-weight:800;margin-bottom:8px">${li.name}</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:20px">موجودی فعلی: <strong style="color:${statusColor(item)}">${item.quantity} ${li.unit}</strong></div>
+          <div class="field-label">مقداری که رسیده (${li.unit})</div>
+          <input class="field-input" type="number" id="inExQty" placeholder="0" inputmode="numeric"
+            value="${collected[id]||''}" style="font-size:28px;padding:16px;text-align:center;margin-bottom:16px">
+          <div style="display:flex;gap:8px">
+            <button id="inExSkip" style="flex:1;padding:16px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">رد کردن</button>
+            <button id="inExNext" style="flex:2;padding:16px;border-radius:12px;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;background:#2563eb;color:white">${step===toExec.length-1?'مرور نهایی ←':'بعدی ←'}</button>
+          </div>
+        </div>
+      </div>`;
+      const qi=document.getElementById('inExQty');qi.focus();
+      document.getElementById('inExSkip').onclick=()=>{collected[id]=0;step++;renderStep();};
+      document.getElementById('inExNext').onclick=()=>{collected[id]=parseFloat(qi.value)||0;step++;renderStep();};
+      qi.onkeydown=e=>{if(e.key==='Enter'){collected[id]=parseFloat(qi.value)||0;step++;renderStep();}};
+    }
+    document.body.appendChild(oe);
+    renderStep();
+    return;
+  }
+
+  // View / Edit mode — same pattern as outgoing
+  const localItems=JSON.parse(JSON.stringify(listItems));
+  let activeViewCat=Object.keys(CATS).find(ck=>Object.values(localItems).some(i=>i.category===ck))||Object.keys(CATS)[0];
+  const o=document.createElement('div');o.className='modal-overlay';o.id='inViewModal';
+  o.style.cssText='align-items:flex-start;padding:0;overflow:hidden';
+
+  function renderITabs(){
+    const el=document.getElementById('ivTabs');if(!el)return;
+    let h='';
+    for(const [ck,cv] of Object.entries(CATS)){
+      const has=Object.values(localItems).some(i=>i.category===ck);if(!has)continue;
+      const cnt=Object.entries(localItems).filter(([,i])=>i.category===ck&&i.checked).length;
+      const tot=Object.entries(localItems).filter(([,i])=>i.category===ck).length;
+      h+=`<button class="build-tab ${activeViewCat===ck?'active':''}" data-ivcat="${ck}">${cv.icon} ${cv.label} <span style="font-size:10px;opacity:.7">${cnt}/${tot}</span></button>`;
+    }
+    el.innerHTML=h;
+    el.querySelectorAll('[data-ivcat]').forEach(b=>b.onclick=()=>{activeViewCat=b.dataset.ivcat;renderIItems();renderITabs();});
+  }
+
+  function renderIItems(){
+    const el=document.getElementById('ivItems');if(!el)return;
+    const catItems=Object.entries(localItems).filter(([,i])=>i.category===activeViewCat);
+    let h='';
+    if(!catItems.length)h=`<div class="empty-state">آیتمی نیست</div>`;
+    else for(const [id,li] of catItems){
+      const stock=items[id]||{quantity:0};
+      h+=`<div class="smart-item ${li.checked?'checked':''}" ${mode==='edit'?`data-ivid="${id}"`:'style="cursor:default"'}>
+        <div class="smart-circle">${li.checked?'✓':''}</div>
+        <div class="smart-name">${li.name}</div>
+        <div style="text-align:left">
+          <div class="smart-qty">${stock.quantity} ${li.unit}</div>
+          ${mode==='edit'?`<div style="display:flex;gap:4px;margin-top:4px">
+            <button class="item-action-btn del" style="padding:3px 8px;font-size:11px" data-ivdel="${id}">✕</button>
+          </div>`:''}
+        </div>
+      </div>`;
+    }
+    el.innerHTML=h;
+    if(mode==='edit'){
+      el.querySelectorAll('[data-ivid]').forEach(el2=>el2.onclick=async e=>{
+        if(e.target.closest('[data-ivdel]'))return;
+        const id=el2.dataset.ivid;
+        localItems[id].checked=!localItems[id].checked;
+        await FB.update('incomingLists/'+lid+'/items/'+id,{checked:localItems[id].checked});
+        el2.className=`smart-item ${localItems[id].checked?'checked':''}`;
+        el2.querySelector('.smart-circle').textContent=localItems[id].checked?'✓':'';
+        renderITabs();
+      });
+      el.querySelectorAll('[data-ivdel]').forEach(b=>b.onclick=async e=>{
+        e.stopPropagation();
+        const id=b.dataset.ivdel;
+        await FB.remove('incomingLists/'+lid+'/items/'+id);
+        delete localItems[id];
+        renderIItems();renderITabs();
+        showToast('حذف شد');
+      });
+    }
+  }
+
+  o.innerHTML=`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)">
+    <div style="padding:14px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:15px;font-weight:800">${lst.title}</div>
+        <div style="font-size:11px;color:var(--text2)">${mode==='edit'?'✏️ ادیت':'👁 بازدید'} — ${lst.createdBy}</div>
+      </div>
+      <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px" id="ivTabs"></div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:12px 16px" id="ivItems"></div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0">
+      <button id="ivClose" style="flex:1;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">بستن</button>
+      ${mode==='edit'?`<button id="ivDel" style="flex:1;padding:12px;border-radius:12px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;background:#2d0a0a;color:#ef4444">🗑 حذف</button>`:''}
+    </div>
+  </div>`;
+  document.body.appendChild(o);
+  renderITabs();renderIItems();
+  document.getElementById('ivClose').onclick=()=>o.remove();
+  const ivd=document.getElementById('ivDel');
+  if(ivd)ivd.onclick=async()=>{await FB.remove('incomingLists/'+lid);showToast('لیست حذف شد');o.remove();};
+}
+
+// ===== BUILD SMART LIST =====
+function showBuildSmartList(){
+  const CATS=allCats();
+  buildingList={};
+  let activeBuildCat=Object.keys(CATS)[0]||'raw';
+  const o=document.createElement('div');o.className='modal-overlay';o.id='smartModal';
+  o.style.cssText='align-items:flex-start;padding:0;overflow:hidden';
+
+  function buildHTML(){
+    const checkedCount=Object.keys(buildingList).length;
+    // tabs
+    let tabsHtml='';
+    for(const [ck,cv] of Object.entries(CATS)){
+      const catItems=Object.entries(items).filter(([,i])=>i.category===ck);
+      if(!catItems.length)continue;
+      const catChecked=catItems.filter(([id])=>buildingList[id]).length;
+      tabsHtml+=`<button class="build-tab ${activeBuildCat===ck?'active':''}" data-bcat="${ck}">
+        ${cv.icon} ${cv.label}${catChecked>0?` <span class="pending-badge" style="background:var(--green)">${catChecked}</span>`:''}
+      </button>`;
+    }
+    // items for active cat
+    const activeItems=Object.entries(items).filter(([,i])=>i.category===activeBuildCat);
+    let itemsHtml='';
+    if(!activeItems.length){
+      itemsHtml=`<div class="empty-state" style="padding:24px 0">آیتمی در این دسته نیست</div>`;
+    } else {
+      for(const [id,item] of activeItems){
+        const checked=buildingList[id];
+        itemsHtml+=`<div class="smart-item ${checked?'checked':''}" data-bid="${id}">
+          <div class="smart-circle">${checked?'✓':''}</div>
+          <div class="smart-name">${item.name}</div>
+          <div class="smart-qty">${item.quantity} ${item.unit}</div>
+        </div>`;
+      }
+    }
+
+    return`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)">
+      <div style="padding:16px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-size:16px;font-weight:800">📦 ایجاد لیست انبار</div>
+          <div style="font-size:12px;color:var(--green);font-weight:700">${checkedCount} انتخاب شده</div>
+        </div>
+        <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px" id="buildTabs">
+          ${tabsHtml}
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:12px 16px" id="buildItems">
+        ${itemsHtml}
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0">
+        <button class="modal-btn cancel" id="smCan" style="flex:1;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">انصراف</button>
+        <button class="modal-btn save" id="smSave" style="flex:2;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:${checkedCount?'var(--gold)':'#333'};color:${checkedCount?'#0f0a00':'#666'}" ${!checkedCount?'disabled':''}>
+          ذخیره لیست ${checkedCount?`(${checkedCount} آیتم)`:''}
+        </button>
+      </div>
+    </div>`;
+  }
+
+  o.innerHTML=buildHTML();
+  document.body.appendChild(o);
+
+  function rewire(){
+    document.getElementById('smCan').onclick=()=>o.remove();
+    document.getElementById('smSave').onclick=async()=>{
+      if(!Object.keys(buildingList).length)return;
+      const listItems={};
+      for(const id of Object.keys(buildingList)){
+        const item=items[id];
+        listItems[id]={name:item.name,unit:item.unit,category:item.category,checked:true,qty:0};
+      }
+      await FB.push('smartLists',{
+        title:'لیست '+persianDate(),
+        ts:Date.now(),createdBy:currentUser?.username||'?',
+        items:listItems
+      });
+      logActivity('ایجاد لیست انبار',`${Object.keys(buildingList).length} آیتم`);
+      showToast('لیست ذخیره شد ✓');o.remove();
+    };
+    o.querySelectorAll('[data-bcat]').forEach(b=>b.onclick=()=>{
+      activeBuildCat=b.dataset.bcat;
+      o.innerHTML=buildHTML();rewire();
+    });
+    o.querySelectorAll('[data-bid]').forEach(el=>el.onclick=()=>{
+      const id=el.dataset.bid;
+      if(buildingList[id])delete buildingList[id];else buildingList[id]=true;
+      o.innerHTML=buildHTML();rewire();
+    });
+  }
+  rewire();
+}
+
+// ===== SHOW SMART LIST =====
+function showSmartList(lid,mode){
+  const lst=smartLists[lid];if(!lst)return;
+  const CATS=allCats();
+  const listItems=lst.items||{};
+
+  if(mode==='exec'){
+    const toExec=Object.entries(listItems).filter(([,v])=>v.checked);
+    if(!toExec.length){showToast('هیچ آیتمی انتخاب نشده','error');return;}
+    const collected={};
+    let step=0;
+    const oe=document.createElement('div');oe.className='modal-overlay';oe.id='execScreen';
+    oe.style.cssText='align-items:flex-start;padding:0;overflow:hidden';
+    function renderExecStep(){
+      const done=step>=toExec.length;
+      if(done){
+        let sumHtml='';
+        for(const [id,li] of toExec){
+          const qty=collected[id]||0;
+          sumHtml+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:14px">${li.name}</span>
+            <span style="font-size:14px;font-weight:700;color:${qty>0?'var(--green)':'var(--text3)'}">${qty>0?qty+' '+li.unit:'رد شد'}</span>
+          </div>`;
+        }
+        oe.innerHTML=`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)">
+          <div style="padding:16px;border-bottom:1px solid var(--border);flex-shrink:0">
+            <div style="font-size:16px;font-weight:800;color:var(--green);margin-bottom:4px">✅ مرور نهایی</div>
+            <div style="font-size:12px;color:var(--text2)">${lst.title} — ${currentUser?.username}</div>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:12px 16px">${sumHtml}</div>
+          <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0">
+            <button id="execBack" style="flex:1;padding:14px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">← برگشت</button>
+            <button id="execConfirm" style="flex:2;padding:14px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--green);color:#000">تایید نهایی ✓</button>
+          </div>
+        </div>`;
+        document.getElementById('execBack').onclick=()=>{step=toExec.length-1;renderExecStep();};
+        document.getElementById('execConfirm').onclick=async()=>{
+          document.getElementById('execConfirm').disabled=true;
+          document.getElementById('execConfirm').textContent='در حال ثبت...';
+          const execRecord={executedBy:currentUser?.username||'?',executedAt:Date.now(),date:persianDateTime(),items:{}};
+          for(const [id,li] of toExec){
+            const qty=collected[id]||0;
+            execRecord.items[id]={name:li.name,unit:li.unit,qty};
+            if(qty>0&&items[id]){
+              await FB.update('items/'+id,{quantity:Math.max(0,items[id].quantity-qty)});
+              await FB.push('history',{itemId:id,itemName:li.name,unit:li.unit,type:'out',qty,note:'انجام لیست: '+lst.title,user:currentUser?.username||'?',date:persianDateTime(),ts:Date.now()});
+            }
+          }
+          const endOfDay=new Date();endOfDay.setHours(23,59,59,999);
+          await FB.update('smartLists/'+lid,{executed:true,executedBy:currentUser?.username||'?',executedAt:Date.now(),lockedUntil:endOfDay.getTime(),execRecord});
+          logActivity('انجام لیست انبار',`${lst.title} توسط ${currentUser?.username}`);
+          showToast('لیست ثبت شد ✓');
+          oe.innerHTML=`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:430px;margin:0 auto;padding:32px">
+            <div style="font-size:60px;margin-bottom:16px">✅</div>
+            <div style="font-size:20px;font-weight:800;margin-bottom:8px">ثبت شد!</div>
+            <div style="font-size:13px;color:var(--text2);margin-bottom:32px;text-align:center">${lst.title}<br>توسط ${currentUser?.username}</div>
+            <button id="execDone" style="width:100%;padding:14px;border-radius:14px;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--gold);color:#0f0a00">بستن</button>
+          </div>`;
+          document.getElementById('execDone').onclick=()=>oe.remove();
+        };
+        return;
+      }
+      const [id,li]=toExec[step];
+      const item=items[id]||{quantity:0};
+      const prog=Math.round((step/toExec.length)*100);
+      oe.innerHTML=`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto">
+        <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <div style="font-size:12px;color:var(--text2)">${lst.title}</div>
+            <div style="font-size:12px;font-weight:700;color:var(--gold)">${step+1} از ${toExec.length}</div>
+          </div>
+          <div style="height:4px;background:var(--border);border-radius:4px">
+            <div style="height:100%;width:${prog}%;background:var(--gold);border-radius:4px;transition:width .3s"></div>
+          </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:24px 16px 16px">
+          <div style="font-size:24px;font-weight:800;margin-bottom:8px">${li.name}</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:4px">موجودی فعلی: <strong style="color:${statusColor(item)}">${item.quantity} ${li.unit}</strong></div>
+          ${li.editQty?`<div style="font-size:12px;color:var(--gold);margin-bottom:20px">مقدار مورد نیاز: ${li.editQty} ${li.unit}</div>`:`<div style="margin-bottom:20px"></div>`}
+          <div class="field-label">مقداری که آوردی (${li.unit})</div>
+          <input class="field-input" type="number" id="execQty" placeholder="0" inputmode="numeric"
+            value="${collected[id]||''}" style="font-size:28px;padding:16px;text-align:center;margin-bottom:16px">
+          <div style="display:flex;gap:8px">
+            <button id="execSkip" style="flex:1;padding:16px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">رد کردن</button>
+            <button id="execNext" style="flex:2;padding:16px;border-radius:12px;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--gold);color:#0f0a00">${step===toExec.length-1?'مرور نهایی ←':'بعدی ←'}</button>
+          </div>
+        </div>
+      </div>`;
+      const qtyInput=document.getElementById('execQty');
+      qtyInput.focus();
+      document.getElementById('execSkip').onclick=()=>{collected[id]=0;step++;renderExecStep();};
+      document.getElementById('execNext').onclick=()=>{collected[id]=parseFloat(qtyInput.value)||0;step++;renderExecStep();};
+      qtyInput.onkeydown=e=>{if(e.key==='Enter'){collected[id]=parseFloat(qtyInput.value)||0;step++;renderExecStep();}};
+    }
+    document.body.appendChild(oe);
+    renderExecStep();
+    return;
+  }
+
+  // View / Edit mode — tabbed, fast (no full rebuild on toggle)
+  const o=document.createElement('div');o.className='modal-overlay';o.id='smartViewModal';
+  o.style.cssText='align-items:flex-start;padding:0;overflow:hidden';
+
+  // local copy for edit
+  const localItems = JSON.parse(JSON.stringify(listItems));
+
+  function renderViewItems(){
+    const el=document.getElementById('svItems');if(!el)return;
+    let h='';
+    for(const [ck,cv] of Object.entries(CATS)){
+      const catItems=Object.entries(localItems).filter(([,i])=>i.category===ck);
+      if(!catItems.length)continue;
+      h+=`<div style="font-size:12px;font-weight:700;color:var(--gold);padding:12px 0 6px">${cv.icon} ${cv.label}</div>`;
+      for(const [id,li] of catItems){
+        const stock=items[id]||{quantity:0};
+        const isChecked=li.checked;
+        if(mode==='view'){
+          h+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+            <div style="font-size:14px">${li.name}</div>
+            <div style="font-size:13px;color:var(--text2)">${stock.quantity} ${li.unit}</div>
+          </div>`;
+        } else {
+          h+=`<div class="smart-item ${isChecked?'checked':''}" id="svi-${id}" data-svid="${id}">
+            <div class="smart-circle" style="background:${isChecked?'var(--green)':'transparent'};border-color:${isChecked?'var(--green)':'var(--border)'}">${isChecked?'✓':''}</div>
+            <div style="flex:1">
+              <div class="smart-name">${li.name}</div>
+              ${li.editQty?`<div style="font-size:11px;color:var(--gold)">مقدار: ${li.editQty} ${li.unit}</div>`:''}
+            </div>
+            <div class="smart-qty">${stock.quantity} ${li.unit}</div>
+          </div>`;
+        }
+      }
+    }
+    if(!h)h=`<div class="empty-state">آیتمی نیست</div>`;
+    el.innerHTML=h;
+
+    if(mode==='edit'){
+      el.querySelectorAll('[data-svid]').forEach(el2=>el2.onclick=()=>{
+        const id=el2.dataset.svid;
+        localItems[id].checked=!localItems[id].checked;
+        const checked=localItems[id].checked;
+        el2.className=`smart-item ${checked?'checked':''}`;
+        const circle=el2.querySelector('.smart-circle');
+        circle.textContent=checked?'✓':'';
+        circle.style.background=checked?'var(--green)':'transparent';
+        circle.style.borderColor=checked?'var(--green)':'var(--border)';
+      });
+    }
+  }
+
+  async function saveAndClose(){
+    if(mode==='edit'){
+      // delete unchecked items, save checked
+      for(const [id,li] of Object.entries(localItems)){
+        if(!li.checked){
+          await FB.remove('smartLists/'+lid+'/items/'+id);
+          await FB.push('smartLists/'+lid+'/editLog',{user:currentUser?.username||'?',action:'آیتم حذف شد',item:li.name,date:persianDateTime(),ts:Date.now()});
+        }
+      }
+      logActivity('ادیت لیست',lst.title);
+    }
+    o.remove();
+  }
+
+  // ===== ADD TO LIST =====
+  function showAddToList(){
+    const CATS2=allCats();
+    const notInList=Object.entries(items).filter(([id])=>!localItems[id]);
+    let addCat=Object.keys(CATS2).find(ck=>notInList.some(([,i])=>i.category===ck))||Object.keys(CATS2)[0];
+    const oa=document.createElement('div');oa.className='modal-overlay';oa.id='addToListModal';
+    oa.style.cssText='align-items:flex-start;padding:0;overflow:hidden;z-index:60';
+    function buildAddHTML(){
+      let tabsH='';
+      for(const [ck,cv] of Object.entries(CATS2)){
+        const has=notInList.some(([,i])=>i.category===ck);if(!has)continue;
+        tabsH+=`<button class="build-tab ${addCat===ck?'active':''}" data-acat="${ck}">${cv.icon} ${cv.label}</button>`;
+      }
+      const catItems=notInList.filter(([,i])=>i.category===addCat);
+      let itemsH='';
+      if(!catItems.length)itemsH=`<div class="empty-state">همه آیتم‌های این دسته در لیست هستن</div>`;
+      else for(const [id,item] of catItems){
+        itemsH+=`<div class="smart-item" data-addid="${id}">
+          <div class="smart-circle">+</div>
+          <div class="smart-name">${item.name}</div>
+          <div class="smart-qty">${item.quantity} ${item.unit}</div>
+        </div>`;
+      }
+      return`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)">
+        <div style="padding:14px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0">
+          <div style="font-size:15px;font-weight:800;margin-bottom:10px">➕ اضافه کردن به لیست</div>
+          <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px" id="addTabsRow">${tabsH}</div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:12px 16px" id="addItemsRow">${itemsH}</div>
+        <div style="padding:12px 16px;border-top:1px solid var(--border)">
+          <button id="addClose" style="width:100%;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">بستن</button>
+        </div>
+      </div>`;
+    }
+    oa.innerHTML=buildAddHTML();
+    document.body.appendChild(oa);
+    function rewireAdd(){
+      document.getElementById('addClose').onclick=()=>oa.remove();
+      oa.querySelectorAll('[data-acat]').forEach(b=>b.onclick=()=>{addCat=b.dataset.acat;oa.innerHTML=buildAddHTML();rewireAdd();});
+      oa.querySelectorAll('[data-addid]').forEach(el=>el.onclick=async()=>{
+        const id=el.dataset.addid;
+        const item=items[id];
+        const newEntry={name:item.name,unit:item.unit,category:item.category,checked:true,qty:0};
+        await FB.update('smartLists/'+lid+'/items/'+id,newEntry);
+        localItems[id]=newEntry;
+        await FB.push('smartLists/'+lid+'/editLog',{user:currentUser?.username||'?',action:'آیتم اضافه شد',item:item.name,date:persianDateTime(),ts:Date.now()});
+        logActivity('ادیت لیست',`${lst.title} — ${item.name} اضافه شد`);
+        const idx=notInList.findIndex(([i])=>i===id);if(idx>=0)notInList.splice(idx,1);
+        showToast(`${item.name} اضافه شد ✓`);
+        oa.innerHTML=buildAddHTML();rewireAdd();
+        renderViewItems();
+      });
+    }
+    rewireAdd();
+  }
+
+  o.innerHTML=`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)">
+    <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:15px;font-weight:800">${lst.title}</div>
+        <div style="font-size:11px;color:var(--text2)">${mode==='edit'?'✏️ ادیت':'👁 بازدید'} — ${lst.createdBy}</div>
+      </div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:12px 16px" id="svItems"></div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0">
+      <button id="svClose" style="flex:1;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">بستن</button>
+      ${mode==='edit'?`
+        <button id="addToListBtn" style="flex:1;padding:12px;border-radius:12px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;background:#052e16;color:#22c55e">➕ اضافه</button>
+        <button id="delList" style="flex:1;padding:12px;border-radius:12px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;background:#2d0a0a;color:#ef4444">🗑 حذف</button>
+      `:''}
+    </div>
+  </div>`;
+  document.body.appendChild(o);
+  renderViewItems();
+  document.getElementById('svClose').onclick=()=>saveAndClose();
+  const dl=document.getElementById('delList');
+  if(dl)dl.onclick=async()=>{await FB.remove('smartLists/'+lid);showToast('لیست حذف شد');o.remove();};
+  const addBtn=document.getElementById('addToListBtn');
+  if(addBtn)addBtn.onclick=()=>showAddToList();
+}
+
+// ===== ADMIN =====
+function renderAdmin(){
+  if(currentUser?.role!=='admin')return;
+  const pending=Object.values(users).filter(u=>u.status==='pending').length;
+  const c=document.getElementById('mainContent');
+  c.innerHTML=`<div class="admin-section-tabs">
+    <button class="ast-btn ${adminSection==='history'?'active':''}" id="astH">📊 تراکنش‌ها</button>
+    <button class="ast-btn ${adminSection==='lists'?'active':''}" id="astL">📦 لیست‌ها</button>
+    <button class="ast-btn ${adminSection==='incoming'?'active':''}" id="astI">📥 ورودی‌ها</button>
+    <button class="ast-btn ${adminSection==='cats'?'active':''}" id="astC">🏷 دسته‌بندی‌ها</button>
+    <button class="ast-btn ${adminSection==='activity'?'active':''}" id="astA">🕐 فعالیت‌ها</button>
+    <button class="ast-btn ${adminSection==='users'?'active':''}" id="astU">👥 کاربران ${pending>0?`<span class="pending-badge">${pending}</span>`:''}</button>
+  </div><div id="adminContent"></div>`;
+  document.getElementById('astH').onclick=()=>{adminSection='history';renderAdmin();};
+  document.getElementById('astL').onclick=()=>{adminSection='lists';renderAdmin();};
+  document.getElementById('astI').onclick=()=>{adminSection='incoming';renderAdmin();};
+  document.getElementById('astC').onclick=()=>{adminSection='cats';renderAdmin();};
+  document.getElementById('astA').onclick=()=>{adminSection='activity';renderAdmin();};
+  document.getElementById('astU').onclick=()=>{adminSection='users';renderAdmin();};
+  if(adminSection==='history')renderAdminHistory();
+  else if(adminSection==='lists')renderAdminLists();
+  else if(adminSection==='incoming')renderAdminIncoming();
+  else if(adminSection==='cats')renderAdminCats();
+  else if(adminSection==='activity')renderActivityLog();
+  else renderAdminUsers();
+}
+
+function renderAdminIncoming(){
+  const c=document.getElementById('adminContent');if(!c)return;
+  const CATS=allCats();
+  const lists=Object.entries(incomingLists).sort((a,b)=>b[1].ts-a[1].ts);
+  if(!lists.length){c.innerHTML=`<div class="empty-state">هیچ ورودی‌ای ثبت نشده</div>`;return;}
+  let html='';
+  for(const [lid,lst] of lists){
+    const itemCount=Object.keys(lst.items||{}).length;
+    const date=persianDate(lst.ts);
+    const time=persianTime(lst.ts);
+    html+=`<div class="admin-item" style="cursor:pointer;border-color:${lst.confirmed?'#3b82f644':'var(--border)'}" data-adminilid="${lid}">
+      <div class="admin-item-top">
+        <div class="admin-item-name">📥 ${lst.title||'ورود جنس'}</div>
+        <span class="badge ${lst.confirmed?'in':'out'}" style="${lst.confirmed?'background:#1e3a5f;color:#93c5fd':''}">${lst.confirmed?'✅ ثبت شده':'در انتظار'}</span>
+      </div>
+      <div class="admin-item-meta">
+        <span>👤 ${lst.createdBy||'—'}</span>
+        <span>📅 ${date} ${time}</span>
+        <span>${itemCount} آیتم</span>
+      </div>
+      ${lst.confirmed?`<div class="admin-item-note">تایید توسط: ${lst.confirmedBy}</div>`:''}
+    </div>`;
+  }
+  c.innerHTML=html;
+  c.querySelectorAll('[data-adminilid]').forEach(el=>el.onclick=()=>showAdminIncomingDetail(el.dataset.adminilid));
+}
+
+function showAdminIncomingDetail(lid){
+  const lst=incomingLists[lid];if(!lst)return;
+  const CATS=allCats();
+  const listItems=lst.items||{};
+  let itemsHtml='';
+  for(const [ck,cv] of Object.entries(CATS)){
+    const catItems=Object.entries(listItems).filter(([,i])=>i.category===ck);
+    if(!catItems.length)continue;
+    itemsHtml+=`<div class="cat-section-title" style="margin-top:12px">${cv.icon} ${cv.label}</div>`;
+    for(const [id,li] of catItems){
+      const stock=items[id]||{quantity:0};
+      itemsHtml+=`<div class="smart-item ${li.checked?'checked':''}" style="cursor:default">
+        <div class="smart-circle">${li.checked?'✓':''}</div>
+        <div class="smart-name">${li.name}</div>
+        <div class="smart-qty">${stock.quantity} ${li.unit}</div>
+      </div>`;
+    }
+  }
+  let execHtml='';
+  if(lst.execRecord){
+    const er=lst.execRecord;
+    execHtml=`<div style="background:#1e3a5f;border:1px solid #3b82f644;border-radius:12px;padding:14px;margin-top:16px">
+      <div style="font-size:13px;font-weight:700;color:#93c5fd;margin-bottom:4px">📥 مقادیر ورودی</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:10px">👤 ${er.confirmedBy} &nbsp;|&nbsp; ${er.date}</div>`;
+    for(const [,ri] of Object.entries(er.items||{})){
+      execHtml+=`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #3b82f622">
+        <span style="font-size:13px">${ri.name}</span>
+        <span style="font-size:13px;font-weight:700;color:${ri.qty>0?'#93c5fd':'var(--text3)'}">${ri.qty>0?'+'+ri.qty+' '+ri.unit:'رد شد'}</span>
+      </div>`;
+    }
+    execHtml+=`</div>`;
+  }
+  const o=document.createElement('div');o.className='modal-overlay';o.id='adminIModal';
+  o.style.cssText='align-items:flex-start;padding:0;overflow:hidden';
+  o.innerHTML=`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom,0px)">
+    <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <div style="font-size:15px;font-weight:800;margin-bottom:4px">${lst.title||'ورود جنس'}</div>
+      <div style="font-size:12px;color:var(--text2)">👤 ${lst.createdBy||'—'} &nbsp;|&nbsp; 📅 ${persianDateTime(lst.ts)}</div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:12px 16px">${itemsHtml||'<div class="empty-state">آیتمی ندارد</div>'}${execHtml}</div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border)">
+      <button id="adminIClose" style="width:100%;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">بستن</button>
+    </div>
+  </div>`;
+  document.body.appendChild(o);
+  document.getElementById('adminIClose').onclick=()=>o.remove();
+}
+
+function renderAdminCats(){
+  const c=document.getElementById('adminContent');if(!c)return;
+  const CATS=allCats();
+  const isDefault=(k)=>['confectionery','plastic','hygiene'].includes(k);
+
+  // check if old keys exist
+  const hasOldCats=Object.values(items).some(i=>['raw','packaging','equipment'].includes(i.category));
+
+  let html='';
+  if(hasOldCats){
+    html+=`<div style="background:#2d1500;border:1px solid #f59e0b44;border-radius:12px;padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;color:#f59e0b;margin-bottom:6px">⚠️ آیتم‌های قدیمی پیدا شد</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">بعضی آیتم‌ها هنوز با دسته‌بندی قدیمی ذخیره شدن. یه بار دکمه زیر رو بزن تا همه آپدیت بشن.</div>
+      <button id="migrateCatsBtn" style="width:100%;padding:10px;border-radius:10px;border:none;background:#f59e0b;color:#000;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">🔄 آپدیت دسته‌بندی‌ها</button>
+    </div>`;
+  }
+
+  html+=`<div style="font-size:12px;color:var(--text2);margin-bottom:14px">دسته‌بندی‌های پیش‌فرض قابل حذف نیستند</div>`;
+  for(const [k,v] of Object.entries(CATS)){
+    const itemCount=Object.values(items).filter(i=>i.category===k).length;
+    html+=`<div class="user-card">
+      <div class="user-card-top">
+        <div class="user-name-big">${v.icon} ${v.label}</div>
+        <span style="width:16px;height:16px;border-radius:50%;background:${v.color};display:inline-block"></span>
+      </div>
+      <div class="user-meta">${itemCount} آیتم در این دسته</div>
+      ${!isDefault(k)?`<div class="user-actions">
+        <button class="user-action-btn deactivate" data-delcat="${k}" data-catname="${v.label}">🗑 حذف دسته‌بندی</button>
+      </div>`:'<div style="font-size:11px;color:var(--text3)">پیش‌فرض — قابل حذف نیست</div>'}
+    </div>`;
+  }
+  c.innerHTML=html;
+
+  const migrateBtn=document.getElementById('migrateCatsBtn');
+  if(migrateBtn) migrateBtn.onclick=async()=>{
+    migrateBtn.textContent='در حال آپدیت...';migrateBtn.disabled=true;
+    const map={'raw':'confectionery','packaging':'plastic','equipment':'hygiene'};
+    const toUpdate=Object.entries(items).filter(([,i])=>map[i.category]);
+    for(const [id,item] of toUpdate){
+      await FB.update('items/'+id,{category:map[item.category]});
+    }
+    showToast(`${toUpdate.length} آیتم آپدیت شد ✓`);
+    renderAdminCats();
+  };
+
+  c.querySelectorAll('[data-delcat]').forEach(b=>b.onclick=()=>{
+    const key=b.dataset.delcat;
+    const name=b.dataset.catname;
+    const itemCount=Object.values(items).filter(i=>i.category===key).length;
+    const o=document.createElement('div');o.className='modal-overlay';
+    o.innerHTML=`<div class="modal">
+      <div class="modal-title">حذف دسته‌بندی</div>
+      <div class="modal-text">آیا مطمئنی که میخوای <strong>${name}</strong> رو حذف کنی؟
+        ${itemCount>0?`<br><br><span style="color:#fca5a5">⚠️ ${itemCount} آیتم در این دسته وجود دارد!</span>`:''}
+      </div>
+      <div class="modal-btns">
+        <button class="modal-btn cancel" id="dcCan">انصراف</button>
+        <button class="modal-btn confirm" id="dcCon">حذف کن</button>
+      </div>
+    </div>`;
+    document.body.appendChild(o);
+    document.getElementById('dcCan').onclick=()=>o.remove();
+    document.getElementById('dcCon').onclick=async()=>{
+      const CATS2=allCats();
+      delete CATS2[key];
+      await FB.set('cats',Object.keys(CATS2).length?CATS2:null);
+      logActivity('حذف دسته‌بندی',name);
+      showToast(`${name} حذف شد`);
+      o.remove();renderAdminCats();
+    };
+  });
+}
+
+function renderAdminLists(){
+  const c=document.getElementById('adminContent');if(!c)return;
+  const CATS=allCats();
+  const lists=Object.entries(smartLists).sort((a,b)=>b[1].ts-a[1].ts);
+  if(!lists.length){c.innerHTML=`<div class="empty-state">هیچ لیستی ساخته نشده</div>`;return;}
+  let html='';
+  for(const [lid,lst] of lists){
+    const itemCount=Object.keys(lst.items||{}).length;
+    const checkedCount=Object.values(lst.items||{}).filter(i=>i.checked).length;
+    const date=persianDate(lst.ts);
+    const time=persianTime(lst.ts);
+    html+=`<div class="admin-item" style="cursor:pointer" data-adminlid="${lid}">
+      <div class="admin-item-top">
+        <div class="admin-item-name">📦 ${lst.title||'لیست انبار'}</div>
+        <span class="badge list">${checkedCount} آیتم</span>
+      </div>
+      <div class="admin-item-meta">
+        <span>👤 ${lst.createdBy||'—'}</span>
+        <span>📅 ${date} ${time}</span>
+      </div>
+    </div>`;
+  }
+  c.innerHTML=html;
+  c.querySelectorAll('[data-adminlid]').forEach(el=>el.onclick=()=>{
+    showAdminListDetail(el.dataset.adminlid);
+  });
+}
+
+function showAdminListDetail(lid){
+  const lst=smartLists[lid];if(!lst)return;
+  const CATS=allCats();
+  const listItems=lst.items||{};
+
+  // کادر ۱: لیست اصلی
+  let listHtml='';
+  for(const [ck,cv] of Object.entries(CATS)){
+    const catItems=Object.entries(listItems).filter(([,i])=>i.category===ck&&i.checked);
+    if(!catItems.length)continue;
+    listHtml+=`<div style="font-size:11px;font-weight:700;color:var(--gold);margin:10px 0 4px">${cv.icon} ${cv.label}</div>`;
+    for(const [id,li] of catItems){
+      listHtml+=`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:13px">${li.name}</span>
+        ${li.editQty?`<span style="font-size:12px;color:var(--gold)">${li.editQty} ${li.unit}</span>`:`<span style="font-size:12px;color:var(--text3)">—</span>`}
+      </div>`;
+    }
+  }
+
+  // کادر ۲: نتیجه انجام
+  let execHtml='';
+  if(lst.execRecord){
+    const er=lst.execRecord;
+    let rows='';
+    for(const [,ri] of Object.entries(er.items||{})){
+      rows+=`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #22c55e22">
+        <span style="font-size:13px">${ri.name}</span>
+        <span style="font-size:13px;font-weight:700;color:${ri.qty>0?'var(--green)':'var(--text3)'}">${ri.qty>0?ri.qty+' '+ri.unit:'رد شد'}</span>
+      </div>`;
+    }
+    execHtml=`<div style="background:#052e16;border:1px solid #22c55e33;border-radius:14px;padding:14px;margin-top:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:800;color:var(--green)">✅ نتیجه انجام</div>
+        <div style="font-size:11px;color:#86efac">👤 ${er.executedBy} | ${er.date}</div>
+      </div>${rows}</div>`;
+  }
+
+  // تاریخچه ادیت
+  const editLog=Object.values(lst.editLog||{}).sort((a,b)=>b.ts-a.ts);
+  let editHtml='';
+  if(editLog.length){
+    editHtml=`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px">
+      <div style="font-size:13px;font-weight:800;color:var(--gold);margin-bottom:10px">📝 تاریخچه ادیت</div>`;
+    for(const log of editLog){
+      editHtml+=`<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border)">
+        <div><div style="font-size:12px">${log.item} — ${log.action}</div>
+          <div style="font-size:10px;color:var(--text3)">${log.date}</div></div>
+        <span style="font-size:11px;color:var(--text2)">👤 ${log.user}</span>
+      </div>`;
+    }
+    editHtml+=`</div>`;
+  }
+
+  const o=document.createElement('div');o.className='modal-overlay';o.id='adminListModal';
+  o.style.cssText='align-items:flex-start;padding:0;overflow:hidden';
+  o.innerHTML=`<div style="background:var(--card);width:100%;height:100dvh;display:flex;flex-direction:column;max-width:430px;margin:0 auto">
+    <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <div style="font-size:15px;font-weight:800;margin-bottom:2px">${lst.title||'لیست انبار'}</div>
+      <div style="font-size:11px;color:var(--text2)">📅 ${persianDateTime(lst.ts)}</div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:12px 16px">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-size:13px;font-weight:800">📦 لیست انتخاب‌شده</div>
+          <div style="font-size:11px;color:var(--text2)">👤 ${lst.createdBy||'—'}</div>
+        </div>
+        ${listHtml||'<div style="font-size:13px;color:var(--text3)">آیتمی ندارد</div>'}
+      </div>
+      ${execHtml}${editHtml}
+    </div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0">
+      <button id="adminLClose" style="width:100%;padding:12px;border-radius:12px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--bg3);color:var(--text2)">بستن</button>
+    </div>
+  </div>`;
+  document.body.appendChild(o);
+  document.getElementById('adminLClose').onclick=()=>o.remove();
+}
+
+function renderAdminHistory(){
+  const c=document.getElementById('adminContent');if(!c)return;
+  let f=[...history];
+  if(adminFilter.type!=='all')f=f.filter(h=>h.type===adminFilter.type);
+  if(adminFilter.search){const s=adminFilter.search.toLowerCase();f=f.filter(h=>h.itemName?.toLowerCase().includes(s)||h.note?.toLowerCase().includes(s));}
+  if(adminFilter.from)f=f.filter(h=>h.ts>=new Date(adminFilter.from).getTime());
+  if(adminFilter.to)f=f.filter(h=>h.ts<=new Date(adminFilter.to).getTime()+86400000);
+  let html=`<div class="admin-filters">
+    <input class="admin-search" type="text" id="aS" value="${adminFilter.search}" placeholder="🔍 جستجو...">
+    <div class="admin-filter-row">
+      <input class="date-input" type="date" id="aF" value="${adminFilter.from}">
+      <input class="date-input" type="date" id="aT" value="${adminFilter.to}">
+    </div>
+    <div class="admin-type-filter">
+      <button class="atype-btn ${adminFilter.type==='all'?'active':''}" data-at="all">همه</button>
+      <button class="atype-btn ${adminFilter.type==='in'?'active':''}" data-at="in">✅ ورود</button>
+      <button class="atype-btn ${adminFilter.type==='out'?'active':''}" data-at="out">❌ خروج</button>
+    </div>
+  </div>
+  <div class="admin-summary">
+    <div class="summary-card"><div class="summary-num" style="color:var(--green)">${f.filter(h=>h.type==='in').length}</div><div class="summary-label">تعداد ورود</div></div>
+    <div class="summary-card"><div class="summary-num" style="color:var(--red)">${f.filter(h=>h.type==='out').length}</div><div class="summary-label">تعداد خروج</div></div>
+  </div>`;
+  if(!f.length)html+=`<div class="empty-state">تراکنشی پیدا نشد</div>`;
+  else{
+    const byDate={};
+    f.forEach(h=>{const d=h.date?.split('،')[0]||'—';if(!byDate[d])byDate[d]=[];byDate[d].push(h);});
+    for(const [date,txs] of Object.entries(byDate)){
+      html+=`<div style="font-size:12px;color:var(--gold);margin:14px 0 8px;font-weight:700">📅 ${date}</div>`;
+      for(const h of txs)
+        html+=`<div class="admin-item"><div class="admin-item-top"><div class="admin-item-name">${h.itemName}</div><div class="admin-item-delta" style="color:${h.type==='in'?'#22c55e':'#ef4444'}">${h.type==='in'?'+':'-'}${h.qty} ${h.unit||''}</div></div>
+          <div class="admin-item-meta"><span class="badge ${h.type}">${h.type==='in'?'ورود':'خروج'}</span><span>${h.date}</span>${h.user?`<span>👤 ${h.user}</span>`:''}</div>
+          ${h.note?`<div class="admin-item-note">📝 ${h.note}</div>`:''}</div>`;
+    }
+  }
+  c.innerHTML=html;
+  document.getElementById('aS').oninput=e=>{adminFilter.search=e.target.value;renderAdminHistory();};
+  document.getElementById('aF').onchange=e=>{adminFilter.from=e.target.value;renderAdminHistory();};
+  document.getElementById('aT').onchange=e=>{adminFilter.to=e.target.value;renderAdminHistory();};
+  c.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>{adminFilter.type=b.dataset.at;renderAdminHistory();});
+}
+
+async function renderActivityLog(){
+  const c=document.getElementById('adminContent');if(!c)return;
+  c.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const raw=await FB.get('activityLog')||{};
+  const logs=Object.entries(raw).map(([k,v])=>({...v,_key:k})).sort((a,b)=>b.ts-a.ts);
+  let html=`<div style="font-size:12px;color:var(--text2);margin-bottom:12px">تمام فعالیت‌های کاربران</div>`;
+  if(!logs.length)html+=`<div class="empty-state">فعالیتی ثبت نشده</div>`;
+  else{
+    const byDate={};
+    logs.forEach(l=>{const d=l.date?.split('،')[0]||'—';if(!byDate[d])byDate[d]=[];byDate[d].push(l);});
+    for(const [date,ls] of Object.entries(byDate)){
+      html+=`<div style="font-size:12px;color:var(--gold);margin:14px 0 8px;font-weight:700">📅 ${date}</div>`;
+      for(const l of ls)
+        html+=`<div class="admin-item">
+          <div class="admin-item-top">
+            <div class="admin-item-name">${l.action}</div>
+            <span style="font-size:11px;color:var(--text2)">👤 ${l.user}</span>
+          </div>
+          <div class="admin-item-meta"><span>${l.date}</span></div>
+          ${l.detail?`<div class="admin-item-note">📝 ${l.detail}</div>`:''}
+        </div>`;
+    }
+  }
+  c.innerHTML=html;
+}
+
+function renderAdminUsers(){
+  const c=document.getElementById('adminContent');if(!c)return;
+  const all=Object.entries(users);
+  const filtered=usersFilter==='all'?all:all.filter(([,u])=>u.status===usersFilter);
+  let html=`<div class="users-filter">
+    <button class="ufilter-btn ${usersFilter==='all'?'active':''}" data-uf="all">همه (${all.length})</button>
+    <button class="ufilter-btn ${usersFilter==='pending'?'active':''}" data-uf="pending">⏳ در انتظار</button>
+    <button class="ufilter-btn ${usersFilter==='active'?'active':''}" data-uf="active">✅ فعال</button>
+    <button class="ufilter-btn ${usersFilter==='disabled'?'active':''}" data-uf="disabled">⛔ غیرفعال</button>
+  </div>`;
+  if(!filtered.length)html+=`<div class="empty-state">کاربری پیدا نشد</div>`;
+  else for(const [uname,udata] of filtered){
+    const sl=udata.status==='pending'?'در انتظار':udata.status==='active'?'فعال':'غیرفعال';
+    const rd=udata.createdAt?persianDate(udata.createdAt):'—';
+    html+=`<div class="user-card"><div class="user-card-top"><div class="user-name-big">👤 ${uname}</div><span class="ubadge ${udata.status}">${sl}</span></div>
+      <div class="user-meta">ثبت‌نام: ${rd}</div>
+      <div class="user-actions">
+        ${udata.status==='pending'?`<button class="user-action-btn approve" data-ap="${uname}">✅ تایید</button><button class="user-action-btn deactivate" data-rj="${uname}">❌ رد</button>`:''}
+        ${udata.status==='active'?`<button class="user-action-btn deactivate" data-dv="${uname}">⛔ غیرفعال</button>`:''}
+        ${udata.status==='disabled'?`<button class="user-action-btn reactivate" data-rv="${uname}">🔄 فعال کردن</button>`:''}
+      </div></div>`;
+  }
+  c.innerHTML=html;
+  c.querySelectorAll('[data-uf]').forEach(b=>b.onclick=()=>{usersFilter=b.dataset.uf;renderAdminUsers();});
+  c.querySelectorAll('[data-ap]').forEach(b=>b.onclick=()=>{FB.update('users/'+b.dataset.ap,{status:'active'});logActivity('تایید کاربر',b.dataset.ap);showToast(b.dataset.ap+' تایید شد ✓');});
+  c.querySelectorAll('[data-rj]').forEach(b=>b.onclick=()=>{FB.update('users/'+b.dataset.rj,{status:'disabled'});logActivity('رد کاربر',b.dataset.rj);showToast(b.dataset.rj+' رد شد');});
+  c.querySelectorAll('[data-dv]').forEach(b=>b.onclick=()=>{FB.update('users/'+b.dataset.dv,{status:'disabled'});logActivity('غیرفعال کردن کاربر',b.dataset.dv);showToast(b.dataset.dv+' غیرفعال شد');});
+  c.querySelectorAll('[data-rv]').forEach(b=>b.onclick=()=>{FB.update('users/'+b.dataset.rv,{status:'active'});logActivity('فعال کردن کاربر',b.dataset.rv);showToast(b.dataset.rv+' فعال شد ✓');});
+}
+
+// ===== BOOT =====
+wireAuth();
+</script>
+</body>
+</html>
